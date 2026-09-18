@@ -13,13 +13,10 @@ st.set_page_config(
 # Custom Enterprise Styling matching Reference UI
 st.markdown("""
     <style>
-        /* Main background & font */
         .stApp {
             background-color: #f8fafc;
             font-family: 'Inter', sans-serif;
         }
-        
-        /* Sidebar Styling */
         [data-testid="stSidebar"] {
             background-color: #0f172a;
             color: #ffffff;
@@ -28,8 +25,6 @@ st.markdown("""
         [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label {
             color: #ffffff !important;
         }
-        
-        /* Card Containers */
         .metric-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
@@ -37,8 +32,6 @@ st.markdown("""
             padding: 20px;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
-        
-        /* Status Badges */
         .badge-available {
             background-color: #dcfce7;
             color: #166534;
@@ -55,8 +48,6 @@ st.markdown("""
             font-weight: 600;
             font-size: 12px;
         }
-        
-        /* Primary Buttons */
         .stButton>button {
             background-color: #7c3aed !important;
             color: white !important;
@@ -64,6 +55,7 @@ st.markdown("""
             font-weight: 600 !important;
             border: none !important;
             padding: 0.5rem 1rem !important;
+            width: 100%;
         }
         .stButton>button:hover {
             background-color: #6d28d9 !important;
@@ -91,13 +83,13 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
 
-# Initialize Session State
-if "tables" not in st.session_state:
+# Initialize Session State securely with 'name' and 'code'
+if "tables" not in st.session_state or not all("name" in t for t in st.session_state.tables):
     st.session_state.tables = [
-        {"id": 1, "name": "Table 1", "seats": 2, "status": "available"},
-        {"id": 2, "name": "Table 2", "seats": 4, "status": "available"},
-        {"id": 3, "name": "Table 3", "seats": 6, "status": "available"},
-        {"id": 4, "name": "Table 4", "seats": 8, "status": "available"}
+        {"id": 1, "code": "T1", "name": "Table 1", "seats": 2, "status": "available"},
+        {"id": 2, "code": "T2", "name": "Table 2", "seats": 4, "status": "available"},
+        {"id": 3, "code": "T3", "name": "Table 3", "seats": 6, "status": "available"},
+        {"id": 4, "code": "T4", "name": "Table 4", "seats": 8, "status": "available"}
     ]
 
 if "reservations" not in st.session_state:
@@ -189,7 +181,7 @@ with col_left:
         st.markdown(f"""
             <div style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <strong style="color: #0f172a; font-size: 15px;">{t['name']}</strong><br>
+                    <strong style="color: #0f172a; font-size: 15px;">{t['code']} • {t['name']}</strong><br>
                     <span style="color: #64748b; font-size: 12px;">{t['seats']} Seats</span>
                 </div>
                 <div>
@@ -240,42 +232,44 @@ with col_mid:
 with col_right:
     st.markdown("<h4 style='margin: 0 0 15px 0; color: #0f172a;'>Live Booking Desk</h4>", unsafe_allow_html=True)
     
-    with st.markdown("""
+    st.markdown("""
         <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
-    """, unsafe_allow_html=True):
-        with st.form("booking_desk_form"):
-            st.markdown("<label style='font-size: 13px; font-weight: 600; color: #334155;'>ASSIGN TABLE</label>", unsafe_allow_html=True)
-            available_tables = [t for t in st.session_state.tables if t["status"] == "available"]
+    """, unsafe_allow_html=True)
+    
+    with st.form("booking_desk_form"):
+        st.markdown("<label style='font-size: 13px; font-weight: 600; color: #334155;'>ASSIGN TABLE</label>", unsafe_allow_html=True)
+        available_tables = [t for t in st.session_state.tables if t["status"] == "available"]
+        
+        if available_tables:
+            table_options = {f"{t['name']} ({t['seats']} Seats - Available)": t['id'] for t in available_tables}
+            selected_label = st.selectbox("Assign Table Select", options=list(table_options.keys()), label_visibility="collapsed")
+            selected_table_id = table_options[selected_label]
             
-            if available_tables:
-                table_options = {f"{t['name']} ({t['seats']} Seats - Available)": t['id'] for t in available_tables}
-                selected_label = st.selectbox("Assign Table Select", options=list(table_options.keys()), label_visibility="collapsed")
-                selected_table_id = table_options[selected_label]
-                
-                st.markdown("<label style='font-size: 13px; font-weight: 600; color: #334155; margin-top: 10px; display: block;'>CUSTOMER NAME</label>", unsafe_allow_html=True)
-                customer_name = st.text_input("Customer Name Input", placeholder="Ashraf", label_visibility="collapsed")
-                
-                st.markdown("<label style='font-size: 13px; font-weight: 600; color: #334155; margin-top: 10px; display: block;'>CONTACT PHONE (INTERNATIONAL)</label>", unsafe_allow_html=True)
-                phone_number = st.text_input("Phone Input", placeholder="(202) 555-0143", label_visibility="collapsed")
-                
-                submit_btn = st.form_submit_button("➕ Confirm Reservation Table", type="primary")
-                
-                if submit_btn:
-                    if not customer_name.strip() or not phone_number.strip():
-                        st.error("Please enter both customer name and phone number.")
-                    else:
-                        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        for t in st.session_state.tables:
-                            if t["id"] == selected_table_id:
-                                t["status"] = "reserved"
-                                st.session_state.reservations.append({
-                                    "Table ID": selected_table_id,
-                                    "Customer Name": customer_name,
-                                    "Phone": phone_number,
-                                    "Timestamp": timestamp
-                                })
-                                st.success(f"Table successfully assigned to {customer_name}!")
-                                st.rerun()
-            else:
-                st.warning("All tables are currently occupied.")
+            st.markdown("<label style='font-size: 13px; font-weight: 600; color: #334155; margin-top: 10px; display: block;'>CUSTOMER NAME</label>", unsafe_allow_html=True)
+            customer_name = st.text_input("Customer Name Input", placeholder="Muhammad Ibraheem Ashraf", label_visibility="collapsed")
+            
+            st.markdown("<label style='font-size: 13px; font-weight: 600; color: #334155; margin-top: 10px; display: block;'>CONTACT PHONE (INTERNATIONAL)</label>", unsafe_allow_html=True)
+            phone_number = st.text_input("Phone Input", placeholder="(202) 555-0143", label_visibility="collapsed")
+            
+            submit_btn = st.form_submit_button("Confirm Reservation Table")
+            
+            if submit_btn:
+                if not customer_name.strip() or not phone_number.strip():
+                    st.error("Please enter both customer name and phone number.")
+                else:
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    for t in st.session_state.tables:
+                        if t["id"] == selected_table_id:
+                            t["status"] = "reserved"
+                            st.session_state.reservations.append({
+                                "Table ID": selected_table_id,
+                                "Customer Name": customer_name,
+                                "Phone": phone_number,
+                                "Timestamp": timestamp
+                            })
+                            st.success(f"Table successfully assigned to {customer_name}!")
+                            st.rerun()
+        else:
+            st.warning("All tables are currently occupied.")
+            
     st.markdown("</div>", unsafe_allow_html=True)
