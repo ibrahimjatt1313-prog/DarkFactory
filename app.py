@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Enterprise Styling matching Reference UI
+# Custom Enterprise Styling matching Reference UI exactly
 st.markdown("""
     <style>
         .stApp {
@@ -49,16 +49,6 @@ st.markdown("""
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
-        .table-id-badge {
-            background-color: #d1fae5;
-            color: #065f46;
-            font-weight: 700;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            text-align: center;
-            min-width: 40px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -216,18 +206,6 @@ with col_mid:
                     <p style="margin: 4px 0 0 0; color: #64748b; font-size: 12px;">📞 {r['Phone']} | 🕒 {r['Timestamp']}</p>
                 </div>
             """, unsafe_allow_html=True)
-        
-        with st.form("release_form"):
-            booked_ids = [t["id"] for t in st.session_state.tables if t["status"] == "reserved"]
-            if booked_ids:
-                rel_id = st.selectbox("Release Table ID", options=booked_ids)
-                if st.form_submit_button("Checkout / Release Table"):
-                    for t in st.session_state.tables:
-                        if t["id"] == rel_id:
-                            t["status"] = "available"
-                    st.session_state.reservations = [r for r in st.session_state.reservations if r["Table ID"] != rel_id]
-                    st.success(f"Table {rel_id} released successfully!")
-                    st.rerun()
     else:
         st.markdown("""
             <div style="background: white; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 45px 20px; text-align: center;">
@@ -254,7 +232,7 @@ with col_right:
             selected_table_id = table_options[selected_label]
             
             st.markdown("<label style='font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-top: 12px; display: block;'>CUSTOMER NAME</label>", unsafe_allow_html=True)
-            customer_name = st.text_input("Customer Name Input", placeholder="Ashraf", label_visibility="collapsed")
+            customer_name = st.text_input("Customer Name Input", value="Ashraf", label_visibility="collapsed")
             
             st.markdown("<label style='font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-top: 12px; display: block;'>CONTACT PHONE (INTERNATIONAL)</label>", unsafe_allow_html=True)
             
@@ -266,22 +244,27 @@ with col_right:
             
             st.markdown("<label style='font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-top: 12px; display: block;'>GUEST COUNT</label>", unsafe_allow_html=True)
             
-            gcol1, gcol2, gcol3, gcol4 = st.columns(4)
-            with gcol1:
-                btn_2 = st.form_submit_button("2", use_container_width=True)
-            with gcol2:
-                btn_4 = st.form_submit_button("4", use_container_width=True)
-            with gcol3:
-                btn_6 = st.form_submit_button("6", use_container_width=True)
-            with gcol4:
-                btn_8 = st.form_submit_button("8", use_container_width=True)
+            gc1, gc2, gc3, gc4 = st.columns(4)
+            with gc1:
+                b2 = st.form_submit_button("2", use_container_width=True)
+            with gc2:
+                b4 = st.form_submit_button("4", use_container_width=True)
+            with gc3:
+                b6 = st.form_submit_button("6", use_container_width=True)
+            with gc4:
+                b8 = st.form_submit_button("8", use_container_width=True)
+            
+            if b2: st.session_state.guest_count = 2
+            if b4: st.session_state.guest_count = 4
+            if b6: st.session_state.guest_count = 6
+            if b8: st.session_state.guest_count = 8
             
             st.markdown("<br>", unsafe_allow_html=True)
             submit_btn = st.form_submit_button("➕ Confirm Reservation Table", use_container_width=True)
             
             if submit_btn:
                 if not customer_name.strip() or not phone_number.strip():
-                    st.error("Please enter customer name and phone number.")
+                    st.error("Kripya customer name aur phone number bhariye.")
                 else:
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     for t in st.session_state.tables:
@@ -296,6 +279,6 @@ with col_right:
                             st.success(f"Table successfully assigned to {customer_name}!")
                             st.rerun()
         else:
-            st.warning("All tables are currently occupied.")
+            st.warning("Sabhi tables abhi occupied hain.")
             
     st.markdown("</div>", unsafe_allow_html=True)
