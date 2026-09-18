@@ -2,11 +2,14 @@
 import threading
 
 app = Flask(__name__)
-
-# Thread lock for concurrency control
 lock = threading.Lock()
 
-# In-memory storage with idempotency tracking
+# Root Home Route
+@app.route('/')
+def home():
+    return {"status": "success", "message": "DarkFactory API is live and running!"}, 200
+
+# In-memory storage with domain extension (cancellations / time slots)
 tables = [
     {"id": 1, "seats": 2, "status": "available"},
     {"id": 2, "seats": 4, "status": "available"},
@@ -21,14 +24,11 @@ def get_tables():
 
 @app.route('/api/reservations', methods=['POST'])
 def create_reservation():
-    # Check for Idempotency Key in headers
     idem_key = request.headers.get('X-Idempotency-Key')
     if idem_key and idem_key in idempotency_store:
         return jsonify(idempotency_store[idem_key]["response"]), idempotency_store[idem_key]["status"]
 
     data = request.get_json()
-    
-    # Validation checks (preventing 500 errors on malformed input)
     if not data or 'table_id' not in data or 'customer_name' not in data:
         return jsonify({"success": False, "error": "Malformed input: Missing table_id or customer_name"}), 400
         
@@ -37,7 +37,6 @@ def create_reservation():
     except (ValueError, TypeError):
         return jsonify({"success": False, "error": "Invalid table_id format"}), 400
 
-    # Concurrency Control using Thread Lock
     with lock:
         table = next((t for t in tables if t['id'] == table_id), None)
         
@@ -56,11 +55,28 @@ def create_reservation():
             reservations.append(reservation)
             response_data, status_code = {"success": True, "reservation": reservation}, 201
 
-    # Save to idempotency store if key was provided
     if idem_key:
         idempotency_store[idem_key] = {"response": response_data, "status": status_code}
 
     return jsonify(response_data), status_code
 
+# --- STAGE 4: Domain Extension (Cancel Reservation) ---
+@app.route('/api/reservations/<int:reservation_id>', methods=['DELETE'])
+def cancel_reservation(reservation_id):
+    with lock:
+        reservation = next((r for r in reservations if r['reservation_id'] == reservation_id and r['status'] == 'confirmed'), None)
+        
+        if not reservation:
+            return jsonify({"success": False, "error": "Active reservation not found"}), 404
+            
+        # Free up the table
+        table = next((t for t in tables if t['id'] == reservation['table_id']), None)
+        if table:
+            table['status'] = 'available'
+            
+        reservation['status'] = 'cancelled'
+        
+    return jsonify({"success": True, "message": f"Reservation {reservation_id} successfully cancelled and table released."}), 200
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002, debug=True)
+    app.run(host='0.0.0.0', port=5003, debug=True)
