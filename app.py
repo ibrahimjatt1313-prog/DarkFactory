@@ -7,51 +7,57 @@ st.set_page_config(
     page_title="DarkFactory - Enterprise Tablekeeper",
     page_icon="🍽️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Enterprise Custom CSS - Removing Radio Dots & Polishing SaaS UI
+# Enterprise Custom CSS - Exact UI matching design reference
 st.markdown("""
     <style>
         .stApp {
             background-color: #f8fafc;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
         }
+        /* Hide default Streamlit sidebar completely and build custom layout */
         [data-testid="stSidebar"] {
-            background-color: #0b0f19;
+            background-color: #0d1322;
             color: #ffffff;
             border-right: 1px solid #1e293b;
-            padding-top: 10px;
+            width: 280px !important;
         }
         [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label {
             color: #ffffff !important;
         }
-        /* Hide default radio buttons completely for clean look */
-        [data-testid="stSidebar"] .stRadio > div {
-            gap: 6px;
+        /* Hide all default radio inputs and bullets */
+        [data-testid="stSidebar"] .stRadio div[role="radiogroup"] {
+            gap: 8px;
         }
         [data-testid="stSidebar"] .stRadio label {
-            background-color: transparent;
+            background-color: transparent !important;
             border-radius: 8px;
-            padding: 8px 12px;
+            padding: 10px 14px;
             color: #94a3b8 !important;
             font-weight: 500;
             font-size: 14px;
-            transition: all 0.2s ease;
             cursor: pointer;
-            width: 100%;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
         [data-testid="stSidebar"] .stRadio label:hover {
-            background-color: #1e293b;
+            background-color: #162032 !important;
             color: #ffffff !important;
         }
+        /* Hide radio circle */
+        [data-testid="stSidebar"] .stRadio input[type="radio"] {
+            display: none;
+        }
+        
         /* Metric Cards */
         .metric-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
         }
         .badge-available {
             background-color: #dcfce7;
@@ -103,19 +109,24 @@ if "nav_page" not in st.session_state:
 # --- SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.markdown("""
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; padding-left: 5px;">
-            <div style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 15px;">DF</div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px; padding-top: 5px;">
+            <div style="background: linear-gradient(135deg, #7c3aed, #6366f1); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 16px;">DF</div>
             <div>
-                <h3 style="margin: 0; color: white; font-size: 17px; font-weight: 700;">DarkFactory</h3>
-                <p style="font-size: 10px; color: #64748b; letter-spacing: 0.8px; margin: 0;">ENTERPRISE PLATFORM</p>
+                <h3 style="margin: 0; color: white; font-size: 18px; font-weight: 700; letter-spacing: -0.3px;">DarkFactory</h3>
+                <p style="font-size: 10px; color: #64748b; letter-spacing: 0.8px; margin: 0; font-weight: 600;">ENTERPRISE PLATFORM</p>
             </div>
         </div>
-        <hr style="border-color: #1e293b; margin: 18px 0;">
+        <hr style="border-color: #1e293b; margin: 20px 0 15px 0;">
     """, unsafe_allow_html=True)
     
-    pages = ["🔲  Live Dashboard", "📋  Table Management", "📅  Reservations", "📈  Operational Logs", "⚙️  System Settings"]
+    pages = [
+        "🔲  Live Dashboard", 
+        "📋  Table Management", 
+        "📅  Reservations", 
+        "📈  Operational Logs", 
+        "⚙️  System Settings"
+    ]
     
-    # Map current page to index
     current_index = 0
     for idx, p in enumerate(pages):
         if st.session_state.nav_page in p:
@@ -134,19 +145,19 @@ with st.sidebar:
     elif "Operational Logs" in nav_selection: st.session_state.nav_page = "Operational Logs"
     elif "System Settings" in nav_selection: st.session_state.nav_page = "System Settings"
 
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br><br><br>", unsafe_allow_html=True)
     st.markdown("""
-        <div style="background-color: #111827; padding: 14px; border-radius: 10px; border: 1px solid #1f2937; margin: 5px;">
+        <div style="background-color: #131d31; padding: 16px; border-radius: 12px; border: 1px solid #1e293b;">
             <p style="font-size: 10px; color: #a78bfa; font-weight: 700; margin: 0; letter-spacing: 0.5px;">US HACKATHON EDITION</p>
-            <p style="font-size: 11px; color: #9ca3af; margin: 4px 0 0 0; line-height: 1.4;">WeAreDevelopers × BAND Platform</p>
+            <p style="font-size: 11px; color: #94a3b8; margin: 6px 0 0 0; line-height: 1.4;">WeAreDevelopers × BAND Reservation Platform Build</p>
         </div>
     """, unsafe_allow_html=True)
 
 # --- TOP HEADER ---
 header_col1, header_col2, header_col3 = st.columns([3, 1, 1])
 with header_col1:
-    st.markdown(f"## **Enterprise Tablekeeper System — {st.session_state.nav_page}**")
-    st.markdown("<p style='color: #64748b; margin-top: -8px; font-size: 14px;'>Real-time restaurant reservation and table seating coordinator dashboard</p>", unsafe_allow_html=True)
+    st.markdown(f"## **Enterprise Tablekeeper System**")
+    st.markdown(f"<p style='color: #64748b; margin-top: -8px; font-size: 14px;'>Real-time restaurant reservation and table seating coordinator dashboard</p>", unsafe_allow_html=True)
 with header_col2:
     st.markdown("""
         <div style="background-color: #ffffff; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 500; color: #334155;">
@@ -175,24 +186,33 @@ if st.session_state.nav_page == "Live Dashboard":
     with mcol1:
         st.markdown(f"""
             <div class="metric-card">
-                <span style="color: #64748b; font-size: 13px; font-weight: 500;">Available Tables</span>
-                <h2 style="margin: 8px 0 6px 0; color: #0f172a; font-size: 30px;">{available_count}</h2>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <span style="color: #64748b; font-size: 13px; font-weight: 500;">Available Tables</span>
+                    <span style="color: #64748b; font-size: 16px;">✅</span>
+                </div>
+                <h2 style="margin: 10px 0 6px 0; color: #0f172a; font-size: 30px; font-weight: 700;">{available_count}</h2>
                 <span style="background-color: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">{available_count} FREE</span>
             </div>
         """, unsafe_allow_html=True)
     with mcol2:
         st.markdown(f"""
             <div class="metric-card">
-                <span style="color: #64748b; font-size: 13px; font-weight: 500;">Active Reservations</span>
-                <h2 style="margin: 8px 0 6px 0; color: #0f172a; font-size: 30px;">{reserved_count}</h2>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <span style="color: #64748b; font-size: 13px; font-weight: 500;">Active Reservations</span>
+                    <span style="color: #64748b; font-size: 16px;">📅</span>
+                </div>
+                <h2 style="margin: 10px 0 6px 0; color: #0f172a; font-size: 30px; font-weight: 700;">{reserved_count}</h2>
                 <span style="color: #64748b; font-size: 11px; font-weight: 600;">{len(st.session_state.reservations)} LIVE</span>
             </div>
         """, unsafe_allow_html=True)
     with mcol3:
         st.markdown(f"""
             <div class="metric-card">
-                <span style="color: #64748b; font-size: 13px; font-weight: 500;">Current Occupancy</span>
-                <h2 style="margin: 8px 0 6px 0; color: #0f172a; font-size: 30px;">{occupancy_rate}%</h2>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <span style="color: #64748b; font-size: 13px; font-weight: 500;">Current Occupancy</span>
+                    <span style="color: #64748b; font-size: 16px;">👤</span>
+                </div>
+                <h2 style="margin: 10px 0 6px 0; color: #0f172a; font-size: 30px; font-weight: 700;">{occupancy_rate}%</h2>
                 <span style="color: #64748b; font-size: 11px; font-weight: 500;">{booked_seats} / {total_seats} SEATS</span>
             </div>
         """, unsafe_allow_html=True)
@@ -203,7 +223,7 @@ if st.session_state.nav_page == "Live Dashboard":
     with col_left:
         st.markdown("""
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: #0f172a; font-size: 16px;">Live Table Status</h4>
+                <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 600;">Live Table Status</h4>
                 <span style="font-size: 12px; color: #166534; font-weight: 500;">🟢 Monitor Seating</span>
             </div>
         """, unsafe_allow_html=True)
@@ -226,7 +246,7 @@ if st.session_state.nav_page == "Live Dashboard":
     with col_mid:
         st.markdown(f"""
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: #0f172a; font-size: 16px;">Active Reservations</h4>
+                <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 600;">Active Reservations</h4>
                 <span style="font-size: 12px; color: #64748b; font-weight: 500;">{len(st.session_state.reservations)} Total</span>
             </div>
         """, unsafe_allow_html=True)
@@ -264,7 +284,7 @@ if st.session_state.nav_page == "Live Dashboard":
             """, unsafe_allow_html=True)
 
     with col_right:
-        st.markdown("<h4 style='margin: 0 0 15px 0; color: #0f172a; font-size: 16px;'>Live Booking Desk</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin: 0 0 15px 0; color: #0f172a; font-size: 16px; font-weight: 600;'>Live Booking Desk</h4>", unsafe_allow_html=True)
         st.markdown('<div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">', unsafe_allow_html=True)
         
         with st.form("booking_desk_form"):
