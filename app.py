@@ -7,83 +7,78 @@ st.set_page_config(
     page_title="DarkFactory - Enterprise Tablekeeper",
     page_icon="🍽️",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
-# Enterprise Custom CSS - Exact UI matching design reference
+# Enterprise Custom CSS - Advanced UI Fixes for Spacing, Fonts & Layout
 st.markdown("""
     <style>
         .stApp {
             background-color: #f8fafc;
-            font-family: 'Inter', -apple-system, sans-serif;
-        }
-        /* Hide default Streamlit sidebar completely and build custom layout */
-        [data-testid="stSidebar"] {
-            background-color: #0d1322;
-            color: #ffffff;
-            border-right: 1px solid #1e293b;
-            width: 280px !important;
-        }
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label {
-            color: #ffffff !important;
-        }
-        /* Hide all default radio inputs and bullets */
-        [data-testid="stSidebar"] .stRadio div[role="radiogroup"] {
-            gap: 8px;
-        }
-        [data-testid="stSidebar"] .stRadio label {
-            background-color: transparent !important;
-            border-radius: 8px;
-            padding: 10px 14px;
-            color: #94a3b8 !important;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        [data-testid="stSidebar"] .stRadio label:hover {
-            background-color: #162032 !important;
-            color: #ffffff !important;
-        }
-        /* Hide radio circle */
-        [data-testid="stSidebar"] .stRadio input[type="radio"] {
-            display: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        /* Metric Cards */
+        /* Sidebar Styling */
+        [data-testid="stSidebar"] {
+            background-color: #0b0f19;
+            color: #ffffff;
+            border-right: 1px solid #1e293b;
+            padding: 0px !important;
+        }
+        
+        /* Metric & Card Polish */
         .metric-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 24px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+            border-radius: 16px;
+            padding: 26px 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+            transition: all 0.2s ease;
         }
+        .metric-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Badges */
         .badge-available {
             background-color: #dcfce7;
             color: #166534;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
             font-size: 11px;
+            letter-spacing: 0.5px;
         }
         .badge-reserved {
             background-color: #fee2e2;
             color: #991b1b;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
             font-size: 11px;
+            letter-spacing: 0.5px;
         }
+        
+        /* Table Box Row */
         .table-box {
             background: white;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.01);
+        }
+        
+        /* Custom Nav Button Styling */
+        .stButton button {
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -106,50 +101,46 @@ if "guest_count" not in st.session_state:
 if "nav_page" not in st.session_state:
     st.session_state.nav_page = "Live Dashboard"
 
-# --- SIDEBAR NAVIGATION ---
+# --- ADVANCED SIDEBAR NAVIGATION (NO RADIO BUTTONS) ---
 with st.sidebar:
     st.markdown("""
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px; padding-top: 5px;">
-            <div style="background: linear-gradient(135deg, #7c3aed, #6366f1); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 16px;">DF</div>
-            <div>
-                <h3 style="margin: 0; color: white; font-size: 18px; font-weight: 700; letter-spacing: -0.3px;">DarkFactory</h3>
-                <p style="font-size: 10px; color: #64748b; letter-spacing: 0.8px; margin: 0; font-weight: 600;">ENTERPRISE PLATFORM</p>
+        <div style="padding: 24px 20px 10px 20px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; font-size: 18px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">DF</div>
+                <div>
+                    <h3 style="margin: 0; color: white; font-size: 18px; font-weight: 700; letter-spacing: -0.3px;">DarkFactory</h3>
+                    <p style="font-size: 10px; color: #64748b; letter-spacing: 1px; margin: 2px 0 0 0; font-weight: 700;">ENTERPRISE PLATFORM</p>
+                </div>
             </div>
         </div>
-        <hr style="border-color: #1e293b; margin: 20px 0 15px 0;">
+        <hr style="border-color: #1e293b; margin: 15px 20px 20px 20px;">
     """, unsafe_allow_html=True)
     
-    pages = [
-        "🔲  Live Dashboard", 
-        "📋  Table Management", 
-        "📅  Reservations", 
-        "📈  Operational Logs", 
-        "⚙️  System Settings"
+    nav_items = [
+        ("🔲", "Live Dashboard"),
+        ("📋", "Table Management"),
+        ("📅", "Reservations"),
+        ("📈", "Operational Logs"),
+        ("⚙️", "System Settings")
     ]
     
-    current_index = 0
-    for idx, p in enumerate(pages):
-        if st.session_state.nav_page in p:
-            current_index = idx
-            
-    nav_selection = st.radio(
-        "Navigation Menu",
-        pages,
-        index=current_index,
-        label_visibility="collapsed"
-    )
-    
-    if "Live Dashboard" in nav_selection: st.session_state.nav_page = "Live Dashboard"
-    elif "Table Management" in nav_selection: st.session_state.nav_page = "Table Management"
-    elif "Reservations" in nav_selection: st.session_state.nav_page = "Reservations"
-    elif "Operational Logs" in nav_selection: st.session_state.nav_page = "Operational Logs"
-    elif "System Settings" in nav_selection: st.session_state.nav_page = "System Settings"
+    st.markdown("<div style='padding: 0 14px;'>", unsafe_allow_html=True)
+    for icon, label in nav_items:
+        is_active = st.session_state.nav_page == label
+        bg_color = "linear-gradient(135deg, #7c3aed, #6366f1)" if is_active else "transparent"
+        text_color = "#ffffff" if is_active else "#94a3b8"
+        border_style = "1px solid rgba(124, 58, 237, 0.4)" if is_active else "1px solid transparent"
+        
+        if st.button(f"{icon}   {label}", key=f"nav_{label}", use_container_width=True):
+            st.session_state.nav_page = label
+            st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<br><br><br><br>", unsafe_allow_html=True)
     st.markdown("""
-        <div style="background-color: #131d31; padding: 16px; border-radius: 12px; border: 1px solid #1e293b;">
-            <p style="font-size: 10px; color: #a78bfa; font-weight: 700; margin: 0; letter-spacing: 0.5px;">US HACKATHON EDITION</p>
-            <p style="font-size: 11px; color: #94a3b8; margin: 6px 0 0 0; line-height: 1.4;">WeAreDevelopers × BAND Reservation Platform Build</p>
+        <div style="margin: 0 20px 24px 20px; background-color: #111827; padding: 18px; border-radius: 14px; border: 1px solid #1f2937;">
+            <p style="font-size: 10px; color: #a78bfa; font-weight: 800; margin: 0; letter-spacing: 0.8px;">US HACKATHON EDITION</p>
+            <p style="font-size: 12px; color: #9ca3af; margin: 6px 0 0 0; line-height: 1.5; font-weight: 500;">WeAreDevelopers × BAND Reservation Platform Build</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -157,21 +148,21 @@ with st.sidebar:
 header_col1, header_col2, header_col3 = st.columns([3, 1, 1])
 with header_col1:
     st.markdown(f"## **Enterprise Tablekeeper System**")
-    st.markdown(f"<p style='color: #64748b; margin-top: -8px; font-size: 14px;'>Real-time restaurant reservation and table seating coordinator dashboard</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color: #64748b; margin-top: -6px; font-size: 15px; font-weight: 400;'>Real-time restaurant reservation and table seating coordinator dashboard</p>", unsafe_allow_html=True)
 with header_col2:
     st.markdown("""
-        <div style="background-color: #ffffff; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 500; color: #334155;">
+        <div style="background-color: #ffffff; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; color: #334155; box-shadow: 0 1px 2px rgba(0,0,0,0.01);">
             Shift: Dinner (17:00 - 22:00)
         </div>
     """, unsafe_allow_html=True)
 with header_col3:
     st.markdown("""
-        <div style="background-color: #7c3aed; color: white; padding: 8px 12px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600;">
+        <div style="background: linear-gradient(135deg, #7c3aed, #6366f1); color: white; padding: 10px 14px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);">
             🟢 Live Feed Active
         </div>
     """, unsafe_allow_html=True)
 
-st.markdown("<hr style='margin-top: 5px; margin-bottom: 25px; border-color: #e2e8f0;'>", unsafe_allow_html=True)
+st.markdown("<hr style='margin-top: 10px; margin-bottom: 30px; border-color: #e2e8f0;'>", unsafe_allow_html=True)
 
 # ================= PAGE 1: LIVE DASHBOARD =================
 if st.session_state.nav_page == "Live Dashboard":
@@ -187,33 +178,33 @@ if st.session_state.nav_page == "Live Dashboard":
         st.markdown(f"""
             <div class="metric-card">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <span style="color: #64748b; font-size: 13px; font-weight: 500;">Available Tables</span>
-                    <span style="color: #64748b; font-size: 16px;">✅</span>
+                    <span style="color: #64748b; font-size: 14px; font-weight: 600;">Available Tables</span>
+                    <span style="background-color: #f1f5f9; padding: 8px; border-radius: 10px; font-size: 14px;">✅</span>
                 </div>
-                <h2 style="margin: 10px 0 6px 0; color: #0f172a; font-size: 30px; font-weight: 700;">{available_count}</h2>
-                <span style="background-color: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">{available_count} FREE</span>
+                <h2 style="margin: 12px 0 8px 0; color: #0f172a; font-size: 34px; font-weight: 800; letter-spacing: -0.5px;">{available_count}</h2>
+                <span style="background-color: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">{available_count} FREE</span>
             </div>
         """, unsafe_allow_html=True)
     with mcol2:
         st.markdown(f"""
             <div class="metric-card">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <span style="color: #64748b; font-size: 13px; font-weight: 500;">Active Reservations</span>
-                    <span style="color: #64748b; font-size: 16px;">📅</span>
+                    <span style="color: #64748b; font-size: 14px; font-weight: 600;">Active Reservations</span>
+                    <span style="background-color: #f1f5f9; padding: 8px; border-radius: 10px; font-size: 14px;">📅</span>
                 </div>
-                <h2 style="margin: 10px 0 6px 0; color: #0f172a; font-size: 30px; font-weight: 700;">{reserved_count}</h2>
-                <span style="color: #64748b; font-size: 11px; font-weight: 600;">{len(st.session_state.reservations)} LIVE</span>
+                <h2 style="margin: 12px 0 8px 0; color: #0f172a; font-size: 34px; font-weight: 800; letter-spacing: -0.5px;">{reserved_count}</h2>
+                <span style="color: #64748b; font-size: 12px; font-weight: 700;">{len(st.session_state.reservations)} LIVE RECORDS</span>
             </div>
         """, unsafe_allow_html=True)
     with mcol3:
         st.markdown(f"""
             <div class="metric-card">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <span style="color: #64748b; font-size: 13px; font-weight: 500;">Current Occupancy</span>
-                    <span style="color: #64748b; font-size: 16px;">👤</span>
+                    <span style="color: #64748b; font-size: 14px; font-weight: 600;">Current Occupancy</span>
+                    <span style="background-color: #f1f5f9; padding: 8px; border-radius: 10px; font-size: 14px;">👤</span>
                 </div>
-                <h2 style="margin: 10px 0 6px 0; color: #0f172a; font-size: 30px; font-weight: 700;">{occupancy_rate}%</h2>
-                <span style="color: #64748b; font-size: 11px; font-weight: 500;">{booked_seats} / {total_seats} SEATS</span>
+                <h2 style="margin: 12px 0 8px 0; color: #0f172a; font-size: 34px; font-weight: 800; letter-spacing: -0.5px;">{occupancy_rate}%</h2>
+                <span style="color: #64748b; font-size: 12px; font-weight: 600;">{booked_seats} / {total_seats} SEATS BOOKED</span>
             </div>
         """, unsafe_allow_html=True)
 
@@ -222,9 +213,9 @@ if st.session_state.nav_page == "Live Dashboard":
 
     with col_left:
         st.markdown("""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 600;">Live Table Status</h4>
-                <span style="font-size: 12px; color: #166534; font-weight: 500;">🟢 Monitor Seating</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                <h4 style="margin: 0; color: #0f172a; font-size: 17px; font-weight: 700;">Live Table Status</h4>
+                <span style="font-size: 13px; color: #166534; font-weight: 600;">🟢 Monitor Seating</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -232,11 +223,11 @@ if st.session_state.nav_page == "Live Dashboard":
             badge_html = '<span class="badge-available">● AVAILABLE</span>' if t["status"] == "available" else '<span class="badge-reserved">● RESERVED</span>'
             st.markdown(f"""
                 <div class="table-box">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="background-color: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 13px;">{t['code']}</div>
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div style="background-color: #f1f5f9; color: #0f172a; padding: 10px 14px; border-radius: 10px; font-weight: 800; font-size: 14px; border: 1px solid #e2e8f0;">{t['code']}</div>
                         <div>
-                            <strong style="color: #0f172a; font-size: 14px;">{t['name']}</strong><br>
-                            <span style="color: #64748b; font-size: 12px;">{t['seats']} Seats Capacity</span>
+                            <strong style="color: #0f172a; font-size: 15px; font-weight: 700;">{t['name']}</strong><br>
+                            <span style="color: #64748b; font-size: 13px; font-weight: 500;">{t['seats']} Seats Capacity</span>
                         </div>
                     </div>
                     <div>{badge_html}</div>
@@ -245,21 +236,21 @@ if st.session_state.nav_page == "Live Dashboard":
 
     with col_mid:
         st.markdown(f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 600;">Active Reservations</h4>
-                <span style="font-size: 12px; color: #64748b; font-weight: 500;">{len(st.session_state.reservations)} Total</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                <h4 style="margin: 0; color: #0f172a; font-size: 17px; font-weight: 700;">Active Reservations</h4>
+                <span style="font-size: 13px; color: #64748b; font-weight: 600;">{len(st.session_state.reservations)} Total</span>
             </div>
         """, unsafe_allow_html=True)
         
         if st.session_state.reservations:
             for r in st.session_state.reservations:
                 st.markdown(f"""
-                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 10px;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <strong style="color: #0f172a;">{r['Customer Name']}</strong>
-                            <span style="font-size: 12px; color: #7c3aed; font-weight: 600;">Table ID: {r['Table ID']}</span>
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.01);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: #0f172a; font-size: 15px;">{r['Customer Name']}</strong>
+                            <span style="font-size: 12px; background: #f3e8ff; color: #7c3aed; padding: 4px 8px; border-radius: 6px; font-weight: 700;">Table ID: {r['Table ID']}</span>
                         </div>
-                        <p style="margin: 4px 0 0 0; color: #64748b; font-size: 12px;">📞 {r['Phone']} | 🕒 {r['Timestamp']} | 👥 {r['Guests']} Guests</p>
+                        <p style="margin: 8px 0 0 0; color: #64748b; font-size: 13px; font-weight: 500;">📞 {r['Phone']} &nbsp;|&nbsp; 🕒 {r['Timestamp']} &nbsp;|&nbsp; 👥 {r['Guests']} Guests</p>
                     </div>
                 """, unsafe_allow_html=True)
             
@@ -276,19 +267,19 @@ if st.session_state.nav_page == "Live Dashboard":
                         st.rerun()
         else:
             st.markdown("""
-                <div style="background: white; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 45px 20px; text-align: center;">
-                    <div style="font-size: 24px; margin-bottom: 8px;">📋</div>
-                    <p style="color: #475569; font-size: 14px; font-weight: 500; margin-bottom: 4px;">No active reservations recorded yet</p>
-                    <p style="color: #94a3b8; font-size: 11px; margin: 0;">Use the Live Booking Desk to confirm a new reservation</p>
+                <div style="background: white; border: 1px dashed #cbd5e1; border-radius: 14px; padding: 55px 20px; text-align: center;">
+                    <div style="font-size: 28px; margin-bottom: 10px;">📋</div>
+                    <p style="color: #334155; font-size: 15px; font-weight: 600; margin-bottom: 6px;">No active reservations recorded yet</p>
+                    <p style="color: #94a3b8; font-size: 13px; margin: 0; font-weight: 400;">Use the Live Booking Desk to confirm a new reservation</p>
                 </div>
             """, unsafe_allow_html=True)
 
     with col_right:
-        st.markdown("<h4 style='margin: 0 0 15px 0; color: #0f172a; font-size: 16px; font-weight: 600;'>Live Booking Desk</h4>", unsafe_allow_html=True)
-        st.markdown('<div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">', unsafe_allow_html=True)
+        st.markdown("<h4 style='margin: 0 0 18px 0; color: #0f172a; font-size: 17px; font-weight: 700;'>Live Booking Desk</h4>", unsafe_allow_html=True)
+        st.markdown('<div style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 22px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);">', unsafe_allow_html=True)
         
         with st.form("booking_desk_form"):
-            st.markdown("<label style='font-size: 11px; font-weight: 700; color: #64748b;'>ASSIGN TABLE</label>", unsafe_allow_html=True)
+            st.markdown("<label style='font-size: 11px; font-weight: 800; color: #64748b; letter-spacing: 0.5px;'>ASSIGN TABLE</label>", unsafe_allow_html=True)
             available_tables = [t for t in st.session_state.tables if t["status"] == "available"]
             
             if available_tables:
@@ -296,18 +287,18 @@ if st.session_state.nav_page == "Live Dashboard":
                 selected_label = st.selectbox("Assign Table", options=list(table_options.keys()), label_visibility="collapsed")
                 selected_table_id = table_options[selected_label]
                 
-                st.markdown("<label style='font-size: 11px; font-weight: 700; color: #64748b; margin-top: 12px; display: block;'>CUSTOMER NAME</label>", unsafe_allow_html=True)
+                st.markdown("<label style='font-size: 11px; font-weight: 800; color: #64748b; margin-top: 14px; display: block; letter-spacing: 0.5px;'>CUSTOMER NAME</label>", unsafe_allow_html=True)
                 customer_name = st.text_input("Customer Name", value="Ashraf", label_visibility="collapsed")
                 
-                st.markdown("<label style='font-size: 11px; font-weight: 700; color: #64748b; margin-top: 12px; display: block;'>CONTACT PHONE (INTERNATIONAL)</label>", unsafe_allow_html=True)
+                st.markdown("<label style='font-size: 11px; font-weight: 800; color: #64748b; margin-top: 14px; display: block; letter-spacing: 0.5px;'>CONTACT PHONE (INTERNATIONAL)</label>", unsafe_allow_html=True)
                 
                 phone_col1, phone_col2 = st.columns([1.2, 2.5])
                 with phone_col1:
-                    country_code = st.selectbox("CC", options=["+1 (US)", "+44 (UK)", "+92 (PK)", "+971 (UAE)"], label_visibility="collapsed")
+                    country_code = st.selectbox("CC", options=["+92 (PK)", "+1 (US)", "+44 (UK)", "+971 (UAE)"], label_visibility="collapsed")
                 with phone_col2:
                     phone_number = st.text_input("Phone", placeholder="(202) 555-0143", label_visibility="collapsed")
                 
-                st.markdown("<label style='font-size: 11px; font-weight: 700; color: #64748b; margin-top: 12px; display: block;'>GUEST COUNT</label>", unsafe_allow_html=True)
+                st.markdown("<label style='font-size: 11px; font-weight: 800; color: #64748b; margin-top: 14px; display: block; letter-spacing: 0.5px;'>GUEST COUNT</label>", unsafe_allow_html=True)
                 
                 g1, g2, g3, g4 = st.columns(4)
                 with g1: 
@@ -319,7 +310,7 @@ if st.session_state.nav_page == "Live Dashboard":
                 with g4: 
                     if st.form_submit_button("8", use_container_width=True): st.session_state.guest_count = 8
                 
-                st.markdown(f"<p style='font-size: 12px; color: #7c3aed; font-weight: 600; margin-top: 6px;'>Selected Party Size: {st.session_state.guest_count} Guests</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='font-size: 13px; color: #7c3aed; font-weight: 700; margin-top: 8px;'>Selected Party Size: {st.session_state.guest_count} Guests</p>", unsafe_allow_html=True)
                 
                 submit_btn = st.form_submit_button("➕ Confirm Reservation Table", use_container_width=True)
                 
@@ -356,11 +347,11 @@ elif st.session_state.nav_page == "Table Management":
         for t in st.session_state.tables:
             status_color = "#166534" if t["status"] == "available" else "#991b1b"
             st.markdown(f"""
-                <div style="background: white; border: 1px solid #e2e8f0; padding: 14px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="background: white; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <strong>{t['name']}</strong> ({t['code']}) — <b>{t['seats']} Seats</b>
+                        <strong style="font-size: 15px; color: #0f172a;">{t['name']}</strong> <span style="color: #64748b;">({t['code']})</span> — <b style="color: #4f46e5;">{t['seats']} Seats</b>
                     </div>
-                    <span style="color: {status_color}; font-weight: bold; font-size: 12px; text-transform: uppercase;">{t['status']}</span>
+                    <span style="color: {status_color}; font-weight: 700; font-size: 12px; text-transform: uppercase;">{t['status']}</span>
                 </div>
             """, unsafe_allow_html=True)
             
