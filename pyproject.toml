@@ -1,0 +1,2 @@
+﻿[tool.vercel]
+entrypoint = "stage-4/app.py"
