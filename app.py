@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enterprise Custom CSS - Exact Layout Matching
+# Enterprise Custom CSS - Fixed Sidebar Button Visibility & Contrast
 st.markdown("""
     <style>
         .stApp {
@@ -24,6 +24,24 @@ st.markdown("""
             color: #ffffff;
             border-right: 1px solid #1e293b;
             padding: 0px !important;
+        }
+        
+        /* Fix Sidebar Button Text & Background */
+        [data-testid="stSidebar"] button {
+            background-color: #111827 !important;
+            color: #f8fafc !important;
+            border: 1px solid #1f2937 !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            text-align: left !important;
+            width: 100% !important;
+            padding: 10px 14px !important;
+            box-shadow: none !important;
+        }
+        [data-testid="stSidebar"] button:hover {
+            background-color: #1f2937 !important;
+            color: #ffffff !important;
+            border-color: #374151 !important;
         }
         
         /* Metric Cards */
