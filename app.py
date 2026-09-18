@@ -1,4 +1,7 @@
-﻿from flask import Flask, request, jsonify
+﻿@app.route('/')
+def home():
+    return {"status": "success", "message": "DarkFactory API is live and running!"}, 200
+from flask import Flask, request, jsonify
 import threading
 
 app = Flask(__name__)
