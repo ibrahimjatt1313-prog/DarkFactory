@@ -1,63 +1,46 @@
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import os
-import ollama
 
-def run_dark_factory_batch():
-    input_dir = "data"
-    output_dir = "outputs"
-    
-    # Ensure folders exist
-    os.makedirs(input_dir, exist_ok=True)
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Check if any txt files exist in data folder, if not create a default sample
-    txt_files = [f for f in os.listdir(input_dir) if f.endswith(".txt")]
-    if not txt_files:
-        sample_file = os.path.join(input_dir, "meeting_transcript.txt")
-        with open(sample_file, "w", encoding="utf-8") as f:
-            f.write("# Project Kickoff Meeting\nHello team! Aaj ki meeting mein humein milestones decide karne hain aur AI model deployment ke tasks assign karne hain.")
-        txt_files = ["meeting_transcript.txt"]
-        
-    print(f"[Dark Factory] Found {len(txt_files)} file(s) to process in '{input_dir}' folder.\n")
-    
-    for filename in txt_files:
-        input_path = os.path.join(input_dir, filename)
-        base_name = os.path.splitext(filename)[0]
-        output_path = os.path.join(output_dir, f"{base_name}_report.md")
-        
-        print(f"----------------------------------------")
-        print(f"Processing file: {filename}")
-        print(f"----------------------------------------")
-        
-        with open(input_path, "r", encoding="utf-8") as f:
-            transcript_data = f.read()
-            
-        # --- AGENT 1: The Creator ---
-        print(" -> [Agent 1: Creator] Extracting key points and tasks...")
-        creator_response = ollama.chat(model='gemma:2b', messages=[
-            {
-                'role': 'user',
-                'content': f"Parse and chunk this meeting transcript into clean key points and actionable tasks:\n\n{transcript_data}",
-            },
-        ])
-        creator_output = creator_response['message']['content']
-        
-        # --- AGENT 2: The Reviewer ---
-        print(" -> [Agent 2: Reviewer] Refining format and adding priority tags...")
-        reviewer_response = ollama.chat(model='gemma:2b', messages=[
-            {
-                'role': 'user',
-                'content': f"Review the following meeting analysis. Fix any gaps, organize it cleanly with professional Markdown formatting, and add a priority tag (High/Medium/Low) to each task:\n\n{creator_output}",
-            },
-        ])
-        final_output = reviewer_response['message']['content']
-        
-        # Save as structured Markdown report
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(f"# Dark Factory Intelligence Report\n\n**Source File:** `{filename}`\n\n---\n\n{final_output}")
-            
-        print(f" [Success] Saved report to {output_path}\n")
+app = FastAPI(title="DarkFactory Dashboard", version="1.0.0")
 
-    print("=== All Batch Tasks Completed Successfully! ===")
+# Ensure required directories exist to prevent startup crashes
+os.makedirs("static", exist_ok=True)
+os.makedirs("templates", exist_ok=True)
+os.makedirs("outputs", exist_ok=True)
+
+# Mount static files safely
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_dashboard(request: Request):
+    output_content = "System initialized and waiting for execution..."
+    
+    file_path = "outputs/reviewed_result.txt"
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                output_content = f.read()
+        except Exception as e:
+            output_content = f"Error reading file: {str(e)}"
+
+    return templates.TemplateResponse("index.html", {
+        "request": request, 
+        "output_content": output_content
+    })
+
+@app.post("/run-process", response_class=HTMLResponse)
+async def run_process(request: Request, stage: str = Form(...)):
+    result_message = f"Successfully executed {stage} pipeline!"
+    
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "output_content": result_message
+    })
 
 if __name__ == "__main__":
-    run_dark_factory_batch()
+    import uvicorn
+    uvicorn.run("dark_factory:app", host="127.0.0.1", port=8000, reload=True)
