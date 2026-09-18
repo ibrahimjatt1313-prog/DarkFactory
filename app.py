@@ -43,7 +43,7 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div class="container">
-        <h2>??? DarkFactory - Tablekeeper UI</h2>
+        <h2>DarkFactory - Tablekeeper UI</h2>
         
         <h3>Available Tables Status</h3>
         <table>
@@ -72,7 +72,7 @@ HTML_TEMPLATE = """
         <div class="form-group">
             <h3>Make a New Reservation</h3>
             <form method="POST" action="/reserve">
-                <label for="table_id">Select Table ID:</label>
+                <label for="title_id">Select Table ID:</label>
                 <input type="number" id="table_id" name="table_id" placeholder="Enter table id (e.g., 1, 2, 3)" required>
                 
                 <label for="customer_name">Customer Name:</label>
