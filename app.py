@@ -10,7 +10,6 @@ tables = [
     {"id": 3, "seats": 6, "status": "available"}
 ]
 reservations = []
-idempotency_store = {}
 
 TEMPLATE = """
 <!DOCTYPE html>
@@ -33,7 +32,7 @@ TEMPLATE = """
 </head>
 <body>
     <div class="container">
-        <h2>??? DarkFactory - Restaurant Reservations (Stage 4 UI)</h2>
+        <h2>??? DarkFactory - Restaurant Reservations</h2>
         <h3>Available Tables</h3>
         <table>
             <thead>
