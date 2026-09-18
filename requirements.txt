@@ -1,8 +1,4 @@
 ﻿Flask
 gunicorn
-alpaca-py
-pandas
-plotly
-streamlit
 requests
 python-dotenv
