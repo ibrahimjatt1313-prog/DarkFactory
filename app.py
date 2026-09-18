@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enterprise Custom CSS - Advanced UI Fixes for Spacing, Fonts & Layout
+# Enterprise Custom CSS - Absolute Precision UI Polish
 st.markdown("""
     <style>
         .stApp {
@@ -26,18 +26,31 @@ st.markdown("""
             padding: 0px !important;
         }
         
-        /* Metric & Card Polish */
+        /* Force high contrast text on sidebar buttons */
+        [data-testid="stSidebar"] .stButton button {
+            background-color: transparent;
+            color: #f8fafc !important;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: left;
+            padding: 12px 16px;
+            transition: all 0.2s ease;
+        }
+        [data-testid="stSidebar"] .stButton button:hover {
+            background-color: #162032;
+            border-color: #334155;
+            color: #ffffff !important;
+        }
+        
+        /* Metric Cards */
         .metric-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
-            padding: 26px 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
-            transition: all 0.2s ease;
-        }
-        .metric-card:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
         
         /* Badges */
@@ -49,6 +62,7 @@ st.markdown("""
             font-weight: 700;
             font-size: 11px;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
         .badge-reserved {
             background-color: #fee2e2;
@@ -58,27 +72,20 @@ st.markdown("""
             font-weight: 700;
             font-size: 11px;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
         
-        /* Table Box Row */
+        /* Table Box Row - Fixed layout to prevent weird wrapping */
         .table-box {
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 14px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.01);
-        }
-        
-        /* Custom Nav Button Styling */
-        .stButton button {
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s ease;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -101,15 +108,15 @@ if "guest_count" not in st.session_state:
 if "nav_page" not in st.session_state:
     st.session_state.nav_page = "Live Dashboard"
 
-# --- ADVANCED SIDEBAR NAVIGATION (NO RADIO BUTTONS) ---
+# --- SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.markdown("""
-        <div style="padding: 24px 20px 10px 20px;">
+        <div style="padding: 26px 20px 12px 20px;">
             <div style="display: flex; align-items: center; gap: 14px;">
                 <div style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; font-size: 18px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">DF</div>
                 <div>
-                    <h3 style="margin: 0; color: white; font-size: 18px; font-weight: 700; letter-spacing: -0.3px;">DarkFactory</h3>
-                    <p style="font-size: 10px; color: #64748b; letter-spacing: 1px; margin: 2px 0 0 0; font-weight: 700;">ENTERPRISE PLATFORM</p>
+                    <h3 style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 700; letter-spacing: -0.3px;">DarkFactory</h3>
+                    <p style="font-size: 10px; color: #94a3b8; letter-spacing: 1px; margin: 2px 0 0 0; font-weight: 700;">ENTERPRISE PLATFORM</p>
                 </div>
             </div>
         </div>
@@ -124,19 +131,23 @@ with st.sidebar:
         ("⚙️", "System Settings")
     ]
     
-    st.markdown("<div style='padding: 0 14px;'>", unsafe_allow_html=True)
+    st.markdown("<div style='padding: 0 16px;'>", unsafe_allow_html=True)
     for icon, label in nav_items:
         is_active = st.session_state.nav_page == label
-        bg_color = "linear-gradient(135deg, #7c3aed, #6366f1)" if is_active else "transparent"
-        text_color = "#ffffff" if is_active else "#94a3b8"
-        border_style = "1px solid rgba(124, 58, 237, 0.4)" if is_active else "1px solid transparent"
-        
-        if st.button(f"{icon}   {label}", key=f"nav_{label}", use_container_width=True):
-            st.session_state.nav_page = label
-            st.rerun()
+        # Highlight active button with solid purple background
+        if is_active:
+            st.markdown(f"""
+                <div style="background: linear-gradient(135deg, #7c3aed, #6366f1); padding: 12px 16px; border-radius: 12px; margin-bottom: 8px; color: white; font-weight: 700; font-size: 14px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
+                    {icon} &nbsp; {label}
+                </div>
+            """, unsafe_allow_html=True)
+        else:
+            if st.button(f"{icon}   {label}", key=f"nav_{label}", use_container_width=True):
+                st.session_state.nav_page = label
+                st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
     st.markdown("""
         <div style="margin: 0 20px 24px 20px; background-color: #111827; padding: 18px; border-radius: 14px; border: 1px solid #1f2937;">
             <p style="font-size: 10px; color: #a78bfa; font-weight: 800; margin: 0; letter-spacing: 0.8px;">US HACKATHON EDITION</p>
@@ -147,8 +158,8 @@ with st.sidebar:
 # --- TOP HEADER ---
 header_col1, header_col2, header_col3 = st.columns([3, 1, 1])
 with header_col1:
-    st.markdown(f"## **Enterprise Tablekeeper System**")
-    st.markdown(f"<p style='color: #64748b; margin-top: -6px; font-size: 15px; font-weight: 400;'>Real-time restaurant reservation and table seating coordinator dashboard</p>", unsafe_allow_html=True)
+    st.markdown("## **Enterprise Tablekeeper System**")
+    st.markdown("<p style='color: #64748b; margin-top: -6px; font-size: 15px; font-weight: 400;'>Real-time restaurant reservation and table seating coordinator dashboard</p>", unsafe_allow_html=True)
 with header_col2:
     st.markdown("""
         <div style="background-color: #ffffff; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; color: #334155; box-shadow: 0 1px 2px rgba(0,0,0,0.01);">
