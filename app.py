@@ -1,11 +1,13 @@
-﻿@app.route('/')
-def home():
-    return {"status": "success", "message": "DarkFactory API is live and running!"}, 200
-from flask import Flask, request, jsonify
+﻿from flask import Flask, request, jsonify
 import threading
 
 app = Flask(__name__)
 lock = threading.Lock()
+
+# Root Home Route
+@app.route('/')
+def home():
+    return {"status": "success", "message": "DarkFactory API is live and running!"}, 200
 
 # In-memory storage with domain extension (cancellations / time slots)
 tables = [
