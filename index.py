@@ -1,4 +1,4 @@
-﻿from stage_4.app import app
+﻿from stage_4.app import app as application
 
-if __name__ == '__main__':
-    app.run()
+# Vercel requires 'app' or 'application' variable
+app = application
