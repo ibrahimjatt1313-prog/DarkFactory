@@ -1,4 +1,4 @@
-﻿from stage_4.app import app as application
+﻿from stage_4.app import app
 
 if __name__ == '__main__':
     app.run()
