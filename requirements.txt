@@ -1,9 +1,4 @@
-fastapi
-uvicorn
-jinja2
-pydantic
-python-multipart
-requests
 streamlit
 pandas
 plotly
+requests
