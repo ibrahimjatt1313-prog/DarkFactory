@@ -5,37 +5,10 @@ import csv
 
 app = Flask(__name__)
 
-# In-Memory Database State for Vercel Serverless Reliability
-MEMORY_TABLES = [
-    {"id": 1, "code": "GB-01", "name": "Grand Ballroom Suite 1", "seats": 8, "zone": "Grand Ballroom", "status": "available"},
-    {"id": 2, "code": "GB-02", "name": "Grand Ballroom Suite 2", "seats": 10, "zone": "Grand Ballroom", "status": "available"},
-    {"id": 3, "code": "GB-03", "name": "Grand Ballroom Imperial", "seats": 12, "zone": "Grand Ballroom", "status": "available"},
-    {"id": 4, "code": "GB-04", "name": "Grand Ballroom Table 4", "seats": 6, "zone": "Grand Ballroom", "status": "available"},
-    {"id": 5, "code": "GB-05", "name": "Grand Ballroom Table 5", "seats": 6, "zone": "Grand Ballroom", "status": "available"},
-    {"id": 6, "code": "GT-01", "name": "Garden Terrace Alcove 1", "seats": 2, "zone": "Garden Terrace", "status": "available"},
-    {"id": 7, "code": "GT-02", "name": "Garden Terrace Alcove 2", "seats": 4, "zone": "Garden Terrace", "status": "available"},
-    {"id": 8, "code": "GT-03", "name": "Botanical Canopy A", "seats": 4, "zone": "Garden Terrace", "status": "available"},
-    {"id": 9, "code": "GT-04", "name": "Botanical Canopy B", "seats": 6, "zone": "Garden Terrace", "status": "available"},
-    {"id": 10, "code": "GT-05", "name": "Fountain View Table 1", "seats": 2, "zone": "Garden Terrace", "status": "available"},
-    {"id": 11, "code": "GT-06", "name": "Fountain View Table 2", "seats": 4, "zone": "Garden Terrace", "status": "available"},
-    {"id": 12, "code": "PH-01", "name": "Skyline Penthouse Alpha", "seats": 6, "zone": "Penthouse Suite", "status": "available"},
-    {"id": 13, "code": "PH-02", "name": "Skyline Penthouse Beta", "seats": 8, "zone": "Penthouse Suite", "status": "available"},
-    {"id": 14, "code": "PH-03", "name": "Crown Observatory", "seats": 10, "zone": "Penthouse Suite", "status": "available"},
-    {"id": 15, "code": "PH-04", "name": "Starlight Lounge 1", "seats": 4, "zone": "Penthouse Suite", "status": "available"},
-    {"id": 16, "code": "PH-05", "name": "Starlight Lounge 2", "seats": 6, "zone": "Penthouse Suite", "status": "available"},
-    {"id": 17, "code": "WC-01", "name": "Sommelier Vault 1", "seats": 2, "zone": "Wine Cellar", "status": "available"},
-    {"id": 18, "code": "WC-02", "name": "Sommelier Vault 2", "seats": 4, "zone": "Wine Cellar", "status": "available"},
-    {"id": 19, "code": "WC-03", "name": "Vintage Reserve Table A", "seats": 6, "zone": "Wine Cellar", "status": "available"},
-    {"id": 20, "code": "WC-04", "name": "Vintage Reserve Table B", "seats": 6, "zone": "Wine Cellar", "status": "available"},
-    {"id": 21, "code": "VIP-01", "name": "Royal Sovereign Suite", "seats": 12, "zone": "VIP Lounge", "status": "available"},
-    {"id": 22, "code": "VIP-02", "name": "Diplomatic Chamber", "seats": 10, "zone": "VIP Lounge", "status": "available"},
-    {"id": 23, "code": "VIP-03", "name": "Executive Alcove A", "seats": 4, "zone": "VIP Lounge", "status": "available"},
-    {"id": 24, "code": "VIP-04", "name": "Executive Alcove B", "seats": 4, "zone": "VIP Lounge", "status": "available"},
-    {"id": 25, "code": "VIP-05", "name": "Ambassador Lounge 1", "seats": 6, "zone": "VIP Lounge", "status": "available"},
-    {"id": 26, "code": "VIP-06", "name": "Ambassador Lounge 2", "seats": 6, "zone": "VIP Lounge", "status": "available"}
-]
-
+# In-Memory Database State - Starts completely empty (No default data)
+MEMORY_TABLES = []
 MEMORY_RESERVATIONS = []
+table_id_counter = 1
 reservation_id_counter = 1
 
 HTML_TEMPLATE = """
@@ -151,6 +124,7 @@ HTML_TEMPLATE = """
             border-radius: 20px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            margin-bottom: 25px;
         }
         .card h3 {
             font-family: 'Playfair Display', serif;
@@ -253,7 +227,7 @@ HTML_TEMPLATE = """
         <div class="hero-header">
             <div class="hero-title">
                 <h1>L'Étoile Noir & Grand Gastronomy</h1>
-                <p>Enterprise Tablekeeper & Hackathon Suite (26+ Elite Suites)</p>
+                <p>Enterprise Tablekeeper & Concierge Suite</p>
             </div>
             <div class="header-actions">
                 <a href="/export" class="btn-export">📥 Export Ledger (CSV)</a>
@@ -287,7 +261,7 @@ HTML_TEMPLATE = """
         {% endif %}
 
         <div class="dashboard-grid">
-            <div class="card">
+            <div class="card" style="margin-bottom: 0;">
                 <h3>Real-Time Floor Status</h3>
                 <div class="zone-tabs">
                     <a href="/?zone=All" class="zone-tab {% if current_zone == 'All' %}active{% endif %}">All Zones</a>
@@ -299,66 +273,103 @@ HTML_TEMPLATE = """
                 </div>
 
                 <div class="tables-container">
-                    {% for t in tables %}
-                    <div class="table-box">
-                        <div class="table-info-top">
-                            <div>
-                                <div class="table-name">{{ t.name }}</div>
-                                <div class="table-zone">{{ t.zone }}</div>
+                    {% if tables %}
+                        {% for t in tables %}
+                        <div class="table-box">
+                            <div class="table-info-top">
+                                <div>
+                                    <div class="table-name">{{ t.name }}</div>
+                                    <div class="table-zone">{{ t.zone }}</div>
+                                </div>
+                                <div>
+                                    {% if t.status == 'available' %}
+                                        <span class="badge-avail">AVAILABLE</span>
+                                    {% else %}
+                                        <span class="badge-res">RESERVED</span>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <div>
-                                {% if t.status == 'available' %}
-                                    <span class="badge-avail">AVAILABLE</span>
-                                {% else %}
-                                    <span class="badge-res">RESERVED</span>
-                                {% endif %}
+                            <div class="table-meta">
+                                <span>Code: <strong>{{ t.code }}</strong></span>
+                                <span>👥 {{ t.seats }} Seats</span>
                             </div>
                         </div>
-                        <div class="table-meta">
-                            <span>Code: <strong>{{ t.code }}</strong></span>
-                            <span>👥 {{ t.seats }} Seats</span>
-                        </div>
-                    </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state" style="grid-column: 1 / -1;">No suites available in this view. Use the form to add a new suite.</div>
+                    {% endif %}
                 </div>
             </div>
 
-            <div class="card">
-                <h3>VIP Concierge Desk</h3>
-                <form method="POST" action="/book">
-                    <div class="form-group">
-                        <label>Select Available Suite / Table</label>
-                        <select name="table_id" class="form-control" required>
-                            {% set available_found = namespace(val=false) %}
-                            {% for t in MEMORY_TABLES %}
-                                {% if t.status == 'available' %}
-                                    {% set available_found.val = true %}
-                                    <option value="{{ t.id }}">{{ t.name }} ({{ t.zone }} - {{ t.seats }} S)</option>
+            <div>
+                <!-- Add Table Desk -->
+                <div class="card">
+                    <h3>Add New Suite / Table</h3>
+                    <form method="POST" action="/add-table">
+                        <div class="form-group">
+                            <label>Suite Code (e.g., GB-01)</label>
+                            <input type="text" name="code" class="form-control" placeholder="GB-01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Suite Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Grand Ballroom Suite 1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Zone Category</label>
+                            <select name="zone" class="form-control" required>
+                                <option value="Grand Ballroom">Grand Ballroom</option>
+                                <option value="Garden Terrace">Garden Terrace</option>
+                                <option value="Penthouse Suite">Penthouse Suite</option>
+                                <option value="Wine Cellar">Wine Cellar</option>
+                                <option value="VIP Lounge">VIP Lounge</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Seat Capacity</label>
+                            <input type="number" name="seats" class="form-control" value="4" min="1" max="30" required>
+                        </div>
+                        <button type="submit" class="btn-luxury" style="background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.4);">Add Suite to Floor</button>
+                    </form>
+                </div>
+
+                <!-- VIP Booking Desk -->
+                <div class="card">
+                    <h3>VIP Concierge Desk</h3>
+                    <form method="POST" action="/book">
+                        <div class="form-group">
+                            <label>Select Available Suite / Table</label>
+                            <select name="table_id" class="form-control" required>
+                                {% set available_found = namespace(val=false) %}
+                                {% for t in MEMORY_TABLES %}
+                                    {% if t.status == 'available' %}
+                                        {% set available_found.val = true %}
+                                        <option value="{{ t.id }}">{{ t.name }} ({{ t.zone }} - {{ t.seats }} S)</option>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if not available_found.val %}
+                                    <option value="" disabled selected>No available suites found</option>
                                 {% endif %}
-                            {% endfor %}
-                            {% if not available_found.val %}
-                                <option value="" disabled selected>All suites currently reserved</option>
-                            {% endif %}
-                        </select>
-                    </div>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Distinguished Guest Name</label>
-                        <input type="text" name="customer_name" class="form-control" value="" placeholder="Enter guest name..." required>
-                    </div>
+                        <div class="form-group">
+                            <label>Distinguished Guest Name</label>
+                            <input type="text" name="customer_name" class="form-control" placeholder="Enter guest name..." required>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Direct Contact Phone</label>
-                        <input type="text" name="phone" class="form-control" placeholder="+92 300 0000000" required>
-                    </div>
+                        <div class="form-group">
+                            <label>Direct Contact Phone</label>
+                            <input type="text" name="phone" class="form-control" placeholder="+92 300 0000000" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Party Size (Guests)</label>
-                        <input type="number" name="guests" class="form-control" value="4" min="1" max="15" required>
-                    </div>
+                        <div class="form-group">
+                            <label>Party Size (Guests)</label>
+                            <input type="number" name="guests" class="form-control" value="4" min="1" max="30" required>
+                        </div>
 
-                    <button type="submit" class="btn-luxury">Confirm VIP Reservation</button>
-                </form>
+                        <button type="submit" class="btn-luxury">Confirm VIP Reservation</button>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -455,6 +466,28 @@ def index():
         MEMORY_TABLES=MEMORY_TABLES
     )
 
+@app.route("/add-table", methods=["POST"])
+def add_table():
+    global table_id_counter
+    code = request.form.get("code")
+    name = request.form.get("name")
+    zone = request.form.get("zone")
+    seats = int(request.form.get("seats", 4))
+    
+    new_table = {
+        "id": table_id_counter,
+        "code": code,
+        "name": name,
+        "seats": seats,
+        "zone": zone,
+        "status": "available"
+    }
+    MEMORY_TABLES.append(new_table)
+    table_id_counter += 1
+    
+    note = f"Suite {name} ({code}) successfully added to floor plan."
+    return redirect(url_for("index", note=note))
+
 @app.route("/book", methods=["POST"])
 def book():
     global reservation_id_counter
@@ -464,12 +497,11 @@ def book():
     guests = request.form.get("guests")
     
     if not table_id_str:
-        return redirect(url_for("index"))
+        return redirect(url_for("index", note="Please select a valid suite."))
         
     table_id = int(table_id_str)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # Find table and update status
     target_table = None
     for t in MEMORY_TABLES:
         if t["id"] == table_id:
@@ -499,7 +531,6 @@ def book():
 def cancel(res_id):
     global MEMORY_RESERVATIONS
     
-    # Find reservation to get table_id
     target_res = None
     for r in MEMORY_RESERVATIONS:
         if r["id"] == res_id:
@@ -508,12 +539,10 @@ def cancel(res_id):
             
     if target_res:
         t_id = target_res["table_id"]
-        # Free table status back to available
         for t in MEMORY_TABLES:
             if t["id"] == t_id:
                 t["status"] = "available"
                 break
-        # Remove from active reservations
         MEMORY_RESERVATIONS = [r for r in MEMORY_RESERVATIONS if r["id"] != res_id]
         
     note = "Reservation successfully cancelled and suite released back to available status."
