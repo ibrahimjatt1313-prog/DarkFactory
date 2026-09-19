@@ -4,19 +4,16 @@ from datetime import datetime
 import io
 import csv
 import os
-import shutil
 
 app = Flask(__name__)
 
-DB_NAME = "restaurant.db"
-TMP_DB_NAME = "/tmp/restaurant.db"
-
-if os.environ.get('VERCEL'):
-    if not os.path.exists(TMP_DB_NAME) and os.path.exists(DB_NAME):
-        shutil.copy(DB_NAME, TMP_DB_NAME)
-    DB_PATH = TMP_DB_NAME
+# Vercel serverless environment mein hamesha /tmp use hoga (jo 100% writable hai)
+# Aur local machine par bhi agar /tmp folder available hai ya hum chahein toh /tmp use kar sakte hain
+# Lekin sabse safe yeh hai ke Vercel detect karne ki bajaye hum direct check lagayein:
+if os.path.exists("/tmp"):
+    DB_PATH = "/tmp/restaurant.db"
 else:
-    DB_PATH = DB_NAME
+    DB_PATH = "restaurant.db"
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
