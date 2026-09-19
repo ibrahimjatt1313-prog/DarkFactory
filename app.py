@@ -5,11 +5,31 @@ import csv
 
 app = Flask(__name__)
 
-# In-Memory Database State - Starts completely empty (No default data)
-MEMORY_TABLES = []
+# ==========================================
+# ENTERPRISE CORE MOCK DATABASE
+# ==========================================
+
+# Stations (Tables) apni jagah mojood hain
+MEMORY_TABLES = [
+    {"id": 1, "code": "DT-01", "name": "Drive-Thru Lane 1", "seats": 4, "zone": "Drive-Thru", "status": "available"},
+    {"id": 2, "code": "DT-02", "name": "Drive-Thru Lane 2", "seats": 4, "zone": "Drive-Thru", "status": "available"},
+    {"id": 3, "code": "FC-101", "name": "Front Counter Station A", "seats": 2, "zone": "Front Counter", "status": "available"},
+    {"id": 4, "code": "FC-102", "name": "Front Counter Station B", "seats": 2, "zone": "Front Counter", "status": "available"},
+    {"id": 5, "code": "KS-01", "name": "Self-Order Kiosk Alpha", "seats": 1, "zone": "Kiosks", "status": "available"},
+    {"id": 6, "code": "KS-02", "name": "Self-Order Kiosk Beta", "seats": 1, "zone": "Kiosks", "status": "available"},
+    {"id": 7, "code": "DL-201", "name": "Global Dispatch Hub 1", "seats": 6, "zone": "Delivery Hub", "status": "available"},
+    {"id": 8, "code": "VIP-01", "name": "Executive Lounge", "seats": 8, "zone": "VIP Lounge", "status": "available"}
+]
+
+# Orders / Reservations ko bilkul blank kar diya gaya hai
 MEMORY_RESERVATIONS = []
-table_id_counter = 1
-reservation_id_counter = 1
+
+table_id_counter = 9
+reservation_id_counter = 101
+
+# ==========================================
+# COMPREHENSIVE ENTERPRISE UI TEMPLATE
+# ==========================================
 
 HTML_TEMPLATE = """
 <!DOCTYPE html>
@@ -17,15 +37,15 @@ HTML_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Étoile Noir | Enterprise Concierge Suite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <title>Apex Global Operations & Enterprise POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #07090e;
-            --bg-card: #0f141f;
+            --bg-deep: #0f1117;
+            --bg-card: #181b24;
             --border-color: rgba(255, 255, 255, 0.08);
-            --accent-gold: #d4af37;
-            --accent-gold-hover: #e6c555;
+            --accent-brand: #6366f1;
+            --accent-hover: #4f46e5;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
         }
@@ -33,10 +53,9 @@ HTML_TEMPLATE = """
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-image: radial-gradient(circle at 50% 0%, #1a102f 0%, transparent 50%), radial-gradient(circle at 100% 100%, #0d1b2a 0%, transparent 40%);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            padding: 30px 20px;
+            padding: 25px 20px;
         }
         .wrapper { max-width: 1400px; margin: 0 auto; }
         .hero-header {
@@ -45,230 +64,237 @@ HTML_TEMPLATE = """
             align-items: center;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px 35px;
-            margin-bottom: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border-radius: 14px;
+            padding: 24px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .hero-title h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
+            font-size: 24px;
             color: #ffffff;
             font-weight: 700;
             margin-bottom: 4px;
         }
-        .hero-title p { color: var(--accent-gold); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+        .hero-title p { color: var(--accent-brand); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
         .btn-export {
-            background: rgba(212, 175, 55, 0.15);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            color: var(--accent-gold);
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: #818cf8;
             padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .btn-export:hover { background: rgba(212, 175, 55, 0.3); }
-        .server-badge {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #34d399;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .server-badge::before { content: ""; width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 10px #34d399; }
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        @media(max-width: 900px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
-        .metric-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-        }
-        .metric-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; }
-        .metric-value { font-size: 24px; font-weight: 700; font-family: 'Playfair Display', serif; color: #fff; }
-        .notification-banner {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
-            padding: 12px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-            margin-bottom: 25px;
-        }
-        @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            margin-bottom: 25px;
-        }
-        .card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-        .zone-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-        .zone-tab {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 6px 14px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s;
         }
-        .zone-tab.active, .zone-tab:hover { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
+        .btn-export:hover { background: rgba(99, 102, 241, 0.3); }
+        .server-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .server-badge::before { content: ""; width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        @media(max-width: 900px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+        }
+        .metric-title { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 6px; }
+        .metric-value { font-size: 22px; font-weight: 700; color: #fff; }
+        .notification-banner {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #818cf8;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+        .zone-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; }
+        .zone-tab {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .zone-tab.active, .zone-tab:hover { background: var(--accent-brand); color: #fff; border-color: var(--accent-brand); }
         .tables-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 12px;
-            max-height: 480px;
+            max-height: 440px;
             overflow-y: auto;
             padding-right: 5px;
         }
-        .tables-container::-webkit-scrollbar { width: 6px; }
-        .tables-container::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         .table-box {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .table-box:hover { border-color: var(--accent-gold); transform: translateY(-2px); }
-        .table-info-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .table-name { font-weight: 600; font-size: 13px; color: #fff; }
-        .table-zone { font-size: 10px; color: var(--accent-gold); margin-top: 2px; }
-        .table-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: var(--text-muted); }
-        .badge-avail { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 700; }
-        .badge-res { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 700; }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px; }
+        .table-box:hover { border-color: var(--accent-brand); }
+        .table-info-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+        .table-name { font-weight: 600; font-size: 12px; color: #fff; }
+        .table-zone { font-size: 10px; color: var(--accent-brand); margin-top: 2px; }
+        .table-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; margin-bottom: 8px; font-size: 11px; color: var(--text-muted); }
+        .badge-avail { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; }
+        .badge-res { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
         .form-control {
             width: 100%;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--border-color);
             color: #ffffff;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
             outline: none;
-            transition: border-color 0.2s;
         }
-        .form-control:focus { border-color: var(--accent-gold); }
-        select.form-control option { background: #0f141f; color: #fff; }
+        .form-control:focus { border-color: var(--accent-brand); }
+        select.form-control option { background: #181b24; color: #fff; }
         .btn-luxury {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
-            color: #000000;
+            background: var(--accent-brand);
+            color: #ffffff;
             border: none;
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            margin-top: 5px;
+            transition: all 0.2s ease;
+            margin-top: 4px;
         }
-        .btn-luxury:hover { background: linear-gradient(135deg, #e6c555 0%, #d4af37 100%); transform: translateY(-1px); }
-        .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .search-input { background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 12px; width: 260px; outline: none; }
-        .search-input:focus { border-color: var(--accent-gold); }
+        .btn-luxury:hover { background: var(--accent-hover); }
+        .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+        .search-input { background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; width: 240px; outline: none; }
+        .search-input:focus { border-color: var(--accent-brand); }
         .archive-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .archive-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 600; }
-        .archive-table td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; color: #e5e7eb; }
+        .archive-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 8px; border-bottom: 1px solid var(--border-color); font-weight: 600; }
+        .archive-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 11px; color: #e0e0e0; }
         .btn-cancel {
             background: rgba(239, 68, 68, 0.15);
             border: 1px solid rgba(239, 68, 68, 0.3);
             color: #f87171;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
         }
         .btn-cancel:hover { background: rgba(239, 68, 68, 0.3); }
-        .empty-state { text-align: center; color: var(--text-muted); padding: 25px; font-style: italic; font-size: 13px; }
+        .btn-delete-table {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #f87171;
+            width: 100%;
+            padding: 5px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-delete-table:hover { background: rgba(239, 68, 68, 0.25); }
+        .empty-state { text-align: center; color: var(--text-muted); padding: 20px; font-style: italic; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <div class="hero-header">
             <div class="hero-title">
-                <h1>L'Étoile Noir & Grand Gastronomy</h1>
-                <p>Enterprise Tablekeeper & Concierge Suite</p>
+                <h1>Apex Global Operations & POS</h1>
+                <p>Unified Enterprise Management Suite</p>
             </div>
             <div class="header-actions">
-                <a href="/export" class="btn-export">📥 Export Ledger (CSV)</a>
+                <a href="/export" class="btn-export">📥 Export Reports (CSV)</a>
                 <div class="server-badge">Live Secure Cluster</div>
             </div>
         </div>
 
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="metric-title">Total Elite Suites</div>
+                <div class="metric-title">Total Units / Stations</div>
                 <div class="metric-value">{{ metrics.total_suites }}</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">Occupancy Rate</div>
+                <div class="metric-title">Active Utilization Rate</div>
                 <div class="metric-value" style="color: #34d399;">{{ metrics.occupancy_rate }}%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">Active Reservations</div>
-                <div class="metric-value" style="color: var(--accent-gold);">{{ metrics.active_count }}</div>
+                <div class="metric-title">Active Dispatch Orders</div>
+                <div class="metric-value" style="color: var(--accent-brand);">{{ metrics.active_count }}</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">Total Seated Guests</div>
+                <div class="metric-title">Total Customer Traffic</div>
                 <div class="metric-value">{{ metrics.total_guests }}</div>
             </div>
         </div>
 
         {% if notification %}
         <div class="notification-banner">
-            🔔 <strong>Automated System Dispatch:</strong> {{ notification }}
+            ⚡ <strong>Apex Automated Dispatch:</strong> {{ notification }}
         </div>
         {% endif %}
 
         <div class="dashboard-grid">
             <div class="card" style="margin-bottom: 0;">
-                <h3>Real-Time Floor Status</h3>
+                <h3>Live Floor & Station Matrix</h3>
                 <div class="zone-tabs">
                     <a href="/?zone=All" class="zone-tab {% if current_zone == 'All' %}active{% endif %}">All Zones</a>
-                    <a href="/?zone=Grand%20Ballroom" class="zone-tab {% if current_zone == 'Grand Ballroom' %}active{% endif %}">Grand Ballroom</a>
-                    <a href="/?zone=Garden%20Terrace" class="zone-tab {% if current_zone == 'Garden Terrace' %}active{% endif %}">Garden Terrace</a>
-                    <a href="/?zone=Penthouse%20Suite" class="zone-tab {% if current_zone == 'Penthouse Suite' %}active{% endif %}">Penthouse Suite</a>
-                    <a href="/?zone=Wine%20Cellar" class="zone-tab {% if current_zone == 'Wine Cellar' %}active{% endif %}">Wine Cellar</a>
+                    <a href="/?zone=Drive-Thru" class="zone-tab {% if current_zone == 'Drive-Thru' %}active{% endif %}">Drive-Thru</a>
+                    <a href="/?zone=Front%20Counter" class="zone-tab {% if current_zone == 'Front Counter' %}active{% endif %}">Front Counter</a>
+                    <a href="/?zone=Kiosks" class="zone-tab {% if current_zone == 'Kiosks' %}active{% endif %}">Kiosks</a>
+                    <a href="/?zone=Delivery%20Hub" class="zone-tab {% if current_zone == 'Delivery Hub' %}active{% endif %}">Delivery Hub</a>
                     <a href="/?zone=VIP%20Lounge" class="zone-tab {% if current_zone == 'VIP Lounge' %}active{% endif %}">VIP Lounge</a>
                 </div>
 
@@ -276,98 +302,103 @@ HTML_TEMPLATE = """
                     {% if tables %}
                         {% for t in tables %}
                         <div class="table-box">
-                            <div class="table-info-top">
-                                <div>
-                                    <div class="table-name">{{ t.name }}</div>
-                                    <div class="table-zone">{{ t.zone }}</div>
+                            <div>
+                                <div class="table-info-top">
+                                    <div>
+                                        <div class="table-name">{{ t.name }}</div>
+                                        <div class="table-zone">{{ t.zone }}</div>
+                                    </div>
+                                    <div>
+                                        {% if t.status == 'available' %}
+                                            <span class="badge-avail">READY</span>
+                                        {% else %}
+                                            <span class="badge-res">ACTIVE</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                <div>
-                                    {% if t.status == 'available' %}
-                                        <span class="badge-avail">AVAILABLE</span>
-                                    {% else %}
-                                        <span class="badge-res">RESERVED</span>
-                                    {% endif %}
+                                <div class="table-meta">
+                                    <span>ID: <strong>{{ t.code }}</strong></span>
+                                    <span>👥 Cap: {{ t.seats }}</span>
                                 </div>
                             </div>
-                            <div class="table-meta">
-                                <span>Code: <strong>{{ t.code }}</strong></span>
-                                <span>👥 {{ t.seats }} Seats</span>
-                            </div>
+                            <form method="POST" action="/delete-table/{{ t.id }}" style="margin: 0;">
+                                <button type="submit" class="btn-delete-table">🗑️ Remove Station</button>
+                            </form>
                         </div>
                         {% endfor %}
                     {% else %}
-                        <div class="empty-state" style="grid-column: 1 / -1;">No suites available in this view. Use the form to add a new suite.</div>
+                        <div class="empty-state" style="grid-column: 1 / -1;">No stations configured for this zone.</div>
                     {% endif %}
                 </div>
             </div>
 
             <div>
-                <!-- Add Table Desk -->
+                <!-- Add Station Desk -->
                 <div class="card">
-                    <h3>Add New Suite / Table</h3>
+                    <h3>Register New Station</h3>
                     <form method="POST" action="/add-table">
                         <div class="form-group">
-                            <label>Suite Code (e.g., GB-01)</label>
-                            <input type="text" name="code" class="form-control" placeholder="GB-01" required>
+                            <label>Station Code (e.g., APX-03)</label>
+                            <input type="text" name="code" class="form-control" placeholder="APX-03" required>
                         </div>
                         <div class="form-group">
-                            <label>Suite Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="Grand Ballroom Suite 1" required>
+                            <label>Station Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Express Counter 3" required>
                         </div>
                         <div class="form-group">
                             <label>Zone Category</label>
                             <select name="zone" class="form-control" required>
-                                <option value="Grand Ballroom">Grand Ballroom</option>
-                                <option value="Garden Terrace">Garden Terrace</option>
-                                <option value="Penthouse Suite">Penthouse Suite</option>
-                                <option value="Wine Cellar">Wine Cellar</option>
+                                <option value="Drive-Thru">Drive-Thru</option>
+                                <option value="Front Counter">Front Counter</option>
+                                <option value="Kiosks">Kiosks</option>
+                                <option value="Delivery Hub">Delivery Hub</option>
                                 <option value="VIP Lounge">VIP Lounge</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Seat Capacity</label>
-                            <input type="number" name="seats" class="form-control" value="4" min="1" max="30" required>
+                            <label>Capacity / Slots</label>
+                            <input type="number" name="seats" class="form-control" value="4" min="1" max="50" required>
                         </div>
-                        <button type="submit" class="btn-luxury" style="background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.4);">Add Suite to Floor</button>
+                        <button type="submit" class="btn-luxury" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4);">Register Station</button>
                     </form>
                 </div>
 
-                <!-- VIP Booking Desk -->
+                <!-- Booking / Order Dispatch Desk -->
                 <div class="card">
-                    <h3>VIP Concierge Desk</h3>
+                    <h3>POS Order & Slot Dispatch</h3>
                     <form method="POST" action="/book">
                         <div class="form-group">
-                            <label>Select Available Suite / Table</label>
+                            <label>Select Ready Station</label>
                             <select name="table_id" class="form-control" required>
                                 {% set available_found = namespace(val=false) %}
                                 {% for t in MEMORY_TABLES %}
                                     {% if t.status == 'available' %}
                                         {% set available_found.val = true %}
-                                        <option value="{{ t.id }}">{{ t.name }} ({{ t.zone }} - {{ t.seats }} S)</option>
+                                        <option value="{{ t.id }}">{{ t.name }} ({{ t.zone }})</option>
                                     {% endif %}
                                 {% endfor %}
                                 {% if not available_found.val %}
-                                    <option value="" disabled selected>No available suites found</option>
+                                    <option value="" disabled selected>All stations currently busy</option>
                                 {% endif %}
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label>Distinguished Guest Name</label>
-                            <input type="text" name="customer_name" class="form-control" placeholder="Enter guest name..." required>
+                            <label>Customer / Fleet Name</label>
+                            <input type="text" name="customer_name" class="form-control" placeholder="Customer name..." required>
                         </div>
 
                         <div class="form-group">
-                            <label>Direct Contact Phone</label>
+                            <label>Contact Phone</label>
                             <input type="text" name="phone" class="form-control" placeholder="+92 300 0000000" required>
                         </div>
 
                         <div class="form-group">
-                            <label>Party Size (Guests)</label>
-                            <input type="number" name="guests" class="form-control" value="4" min="1" max="30" required>
+                            <label>Party / Order Size</label>
+                            <input type="number" name="guests" class="form-control" value="2" min="1" max="50" required>
                         </div>
 
-                        <button type="submit" class="btn-luxury">Confirm VIP Reservation</button>
+                        <button type="submit" class="btn-luxury">Dispatch & Secure Slot</button>
                     </form>
                 </div>
             </div>
@@ -375,10 +406,10 @@ HTML_TEMPLATE = """
 
         <div class="card">
             <div class="ledger-header">
-                <h3>Confirmed Reservations Ledger</h3>
+                <h3>Active Operations Ledger</h3>
                 <form method="GET" action="/" style="margin: 0;">
                     <input type="hidden" name="zone" value="{{ current_zone }}">
-                    <input type="text" name="search" class="search-input" placeholder="Search guest name or phone..." value="{{ search_query }}">
+                    <input type="text" name="search" class="search-input" placeholder="Search customer or phone..." value="{{ search_query }}">
                 </form>
             </div>
 
@@ -386,11 +417,11 @@ HTML_TEMPLATE = """
                 <table class="archive-table">
                     <thead>
                         <tr>
-                            <th>Guest Name</th>
-                            <th>Table Assigned</th>
+                            <th>Customer / Fleet</th>
+                            <th>Station Assigned</th>
                             <th>Zone</th>
                             <th>Contact Phone</th>
-                            <th>Party Size</th>
+                            <th>Size</th>
                             <th>Timestamp</th>
                             <th>Action</th>
                         </tr>
@@ -400,13 +431,13 @@ HTML_TEMPLATE = """
                         <tr>
                             <td><strong>{{ r.customer_name }}</strong></td>
                             <td>{{ r.table_name }} ({{ r.code }})</td>
-                            <td><span style="color: var(--accent-gold);">{{ r.zone }}</span></td>
+                            <td><span style="color: var(--accent-brand);">{{ r.zone }}</span></td>
                             <td>{{ r.phone }}</td>
-                            <td>{{ r.guests }} Guests</td>
+                            <td>{{ r.guests }}</td>
                             <td>{{ r.timestamp }}</td>
                             <td>
                                 <form method="POST" action="/cancel/{{ r.id }}" style="margin: 0;">
-                                    <button type="submit" class="btn-cancel">Cancel & Release</button>
+                                    <button type="submit" class="btn-cancel">Release</button>
                                 </form>
                             </td>
                         </tr>
@@ -414,7 +445,7 @@ HTML_TEMPLATE = """
                     </tbody>
                 </table>
             {% else %}
-                <div class="empty-state">No matching reservations recorded in the secure ledger.</div>
+                <div class="empty-state">No active orders found in the secure enterprise ledger.</div>
             {% endif %}
         </div>
     </div>
@@ -422,13 +453,16 @@ HTML_TEMPLATE = """
 </html>
 """
 
+# ==========================================
+# FLASK ROUTE CONTROLLERS
+# ==========================================
+
 @app.route("/")
 def index():
     zone_filter = request.args.get("zone", "All")
     search_query = request.args.get("search", "").strip()
     notification = request.args.get("note", "")
     
-    # Filter tables based on zone
     if zone_filter == "All":
         tables = MEMORY_TABLES
     else:
@@ -447,7 +481,6 @@ def index():
         "total_guests": total_guests
     }
     
-    # Filter reservations for search
     reservations = MEMORY_RESERVATIONS
     if search_query:
         reservations = [
@@ -485,7 +518,17 @@ def add_table():
     MEMORY_TABLES.append(new_table)
     table_id_counter += 1
     
-    note = f"Suite {name} ({code}) successfully added to floor plan."
+    note = f"Station {name} ({code}) successfully registered to the network."
+    return redirect(url_for("index", note=note))
+
+@app.route("/delete-table/<int:table_id>", methods=["POST"])
+def delete_table(table_id):
+    global MEMORY_TABLES, MEMORY_RESERVATIONS
+    
+    MEMORY_RESERVATIONS = [r for r in MEMORY_RESERVATIONS if r["table_id"] != table_id]
+    MEMORY_TABLES = [t for t in MEMORY_TABLES if t["id"] != table_id]
+    
+    note = "Station removed successfully from the network."
     return redirect(url_for("index", note=note))
 
 @app.route("/book", methods=["POST"])
@@ -497,7 +540,7 @@ def book():
     guests = request.form.get("guests")
     
     if not table_id_str:
-        return redirect(url_for("index", note="Please select a valid suite."))
+        return redirect(url_for("index", note="Please select an available station."))
         
     table_id = int(table_id_str)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -524,7 +567,7 @@ def book():
         MEMORY_RESERVATIONS.insert(0, reservation)
         reservation_id_counter += 1
         
-    note = f"VIP Suite successfully secured and confirmed for {customer_name}."
+    note = f"Order successfully dispatched and secured for {customer_name}."
     return redirect(url_for("index", note=note))
 
 @app.route("/cancel/<int:res_id>", methods=["POST"])
@@ -545,14 +588,14 @@ def cancel(res_id):
                 break
         MEMORY_RESERVATIONS = [r for r in MEMORY_RESERVATIONS if r["id"] != res_id]
         
-    note = "Reservation successfully cancelled and suite released back to available status."
+    note = "Station released successfully and returned to ready status."
     return redirect(url_for("index", note=note))
 
 @app.route("/export")
 def export_csv():
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["Reservation ID", "Guest Name", "Suite Name", "Code", "Zone", "Phone", "Guests", "Timestamp"])
+    writer.writerow(["Order ID", "Customer Name", "Station Name", "Code", "Zone", "Phone", "Size", "Timestamp"])
     
     for r in MEMORY_RESERVATIONS:
         writer.writerow([r["id"], r["customer_name"], r["table_name"], r["code"], r["zone"], r["phone"], r["guests"], r["timestamp"]])
@@ -561,7 +604,7 @@ def export_csv():
     return Response(
         output,
         mimetype="text/csv",
-        headers={"Content-Disposition": "attachment;filename=reservations_ledger.csv"}
+        headers={"Content-Disposition": "attachment;filename=apex_operations_ledger.csv"}
     )
 
 if __name__ == "__main__":
