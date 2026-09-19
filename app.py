@@ -9,7 +9,6 @@ app = Flask(__name__)
 # ENTERPRISE CORE MOCK DATABASE
 # ==========================================
 
-# Stations (Tables) apni jagah mojood hain
 MEMORY_TABLES = [
     {"id": 1, "code": "DT-01", "name": "Drive-Thru Lane 1", "seats": 4, "zone": "Drive-Thru", "status": "available"},
     {"id": 2, "code": "DT-02", "name": "Drive-Thru Lane 2", "seats": 4, "zone": "Drive-Thru", "status": "available"},
@@ -21,7 +20,6 @@ MEMORY_TABLES = [
     {"id": 8, "code": "VIP-01", "name": "Executive Lounge", "seats": 8, "zone": "VIP Lounge", "status": "available"}
 ]
 
-# Orders / Reservations ko bilkul blank kar diya gaya hai
 MEMORY_RESERVATIONS = []
 
 table_id_counter = 9
@@ -37,7 +35,7 @@ HTML_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Global Operations & Enterprise POS</title>
+    <title>L'Étoile Noire & Grand Gastronomy - Executive Suite</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -252,8 +250,8 @@ HTML_TEMPLATE = """
     <div class="wrapper">
         <div class="hero-header">
             <div class="hero-title">
-                <h1>Apex Global Operations & POS</h1>
-                <p>Unified Enterprise Management Suite</p>
+                <h1>L'Étoile Noire & Grand Gastronomy</h1>
+                <p>Executive Tablekeeper & Concierge Suite</p>
             </div>
             <div class="header-actions">
                 <a href="/export" class="btn-export">📥 Export Reports (CSV)</a>
@@ -282,7 +280,7 @@ HTML_TEMPLATE = """
 
         {% if notification %}
         <div class="notification-banner">
-            ⚡ <strong>Apex Automated Dispatch:</strong> {{ notification }}
+            ⚡ <strong>Automated Concierge:</strong> {{ notification }}
         </div>
         {% endif %}
 
@@ -365,7 +363,7 @@ HTML_TEMPLATE = """
 
                 <!-- Booking / Order Dispatch Desk -->
                 <div class="card">
-                    <h3>POS Order & Slot Dispatch</h3>
+                    <h3>Tablekeeper & Order Dispatch</h3>
                     <form method="POST" action="/book">
                         <div class="form-group">
                             <label>Select Ready Station</label>
@@ -384,8 +382,8 @@ HTML_TEMPLATE = """
                         </div>
 
                         <div class="form-group">
-                            <label>Customer / Fleet Name</label>
-                            <input type="text" name="customer_name" class="form-control" placeholder="Customer name..." required>
+                            <label>Customer / Guest Name</label>
+                            <input type="text" name="customer_name" class="form-control" placeholder="Guest name..." required>
                         </div>
 
                         <div class="form-group">
@@ -409,7 +407,7 @@ HTML_TEMPLATE = """
                 <h3>Active Operations Ledger</h3>
                 <form method="GET" action="/" style="margin: 0;">
                     <input type="hidden" name="zone" value="{{ current_zone }}">
-                    <input type="text" name="search" class="search-input" placeholder="Search customer or phone..." value="{{ search_query }}">
+                    <input type="text" name="search" class="search-input" placeholder="Search guest or phone..." value="{{ search_query }}">
                 </form>
             </div>
 
@@ -417,7 +415,7 @@ HTML_TEMPLATE = """
                 <table class="archive-table">
                     <thead>
                         <tr>
-                            <th>Customer / Fleet</th>
+                            <th>Guest / Fleet</th>
                             <th>Station Assigned</th>
                             <th>Zone</th>
                             <th>Contact Phone</th>
@@ -445,7 +443,7 @@ HTML_TEMPLATE = """
                     </tbody>
                 </table>
             {% else %}
-                <div class="empty-state">No active orders found in the secure enterprise ledger.</div>
+                <div class="empty-state">No active orders found in the executive ledger.</div>
             {% endif %}
         </div>
     </div>
@@ -595,7 +593,7 @@ def cancel(res_id):
 def export_csv():
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["Order ID", "Customer Name", "Station Name", "Code", "Zone", "Phone", "Size", "Timestamp"])
+    writer.writerow(["Order ID", "Guest Name", "Station Name", "Code", "Zone", "Phone", "Size", "Timestamp"])
     
     for r in MEMORY_RESERVATIONS:
         writer.writerow([r["id"], r["customer_name"], r["table_name"], r["code"], r["zone"], r["phone"], r["guests"], r["timestamp"]])
@@ -604,7 +602,7 @@ def export_csv():
     return Response(
         output,
         mimetype="text/csv",
-        headers={"Content-Disposition": "attachment;filename=apex_operations_ledger.csv"}
+        headers={"Content-Disposition": "attachment;filename=letoile_noire_operations_ledger.csv"}
     )
 
 if __name__ == "__main__":
