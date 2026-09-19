@@ -7,77 +7,65 @@ import os
 
 app = Flask(__name__)
 
-# Vercel serverless environment mein hamesha /tmp use hoga (jo 100% writable hai)
-# Aur local machine par bhi agar /tmp folder available hai ya hum chahein toh /tmp use kar sakte hain
-# Lekin sabse safe yeh hai ke Vercel detect karne ki bajaye hum direct check lagayein:
-if os.path.exists("/tmp"):
-    DB_PATH = "/tmp/restaurant.db"
-else:
-    DB_PATH = "restaurant.db"
+# Vercel serverless environment mein hamesha /tmp use hoga
+def get_db_path():
+    if os.path.exists("/tmp"):
+        return "/tmp/restaurant.db"
+    return "restaurant.db"
 
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
+    db_path = get_db_path()
+    db_exists = os.path.exists(db_path)
+    
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-    return conn
-
-def init_db():
-    conn = get_db()
-    cursor = conn.cursor()
     
-    # Create tables table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS tables (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            code TEXT UNIQUE,
-            name TEXT,
-            seats INTEGER,
-            zone TEXT,
-            status TEXT DEFAULT 'available'
-        )
-    ''')
-    
-    # Create reservations table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS reservations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            table_id INTEGER,
-            customer_name TEXT,
-            phone TEXT,
-            guests INTEGER,
-            timestamp TEXT,
-            FOREIGN KEY(table_id) REFERENCES tables(id)
-        )
-    ''')
-    
-    # Populate initial 26 elite suites if tables table is empty
-    cursor.execute("SELECT COUNT(*) FROM tables")
-    if cursor.fetchone()[0] == 0:
+    # Lazy Initialization: Agar file nahi bani ya tables nahi hain, toh runtime par create karo
+    if not db_exists:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tables (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                code TEXT UNIQUE,
+                name TEXT,
+                seats INTEGER,
+                zone TEXT,
+                status TEXT DEFAULT 'available'
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS reservations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                table_id INTEGER,
+                customer_name TEXT,
+                phone TEXT,
+                guests INTEGER,
+                timestamp TEXT,
+                FOREIGN KEY(table_id) REFERENCES tables(id)
+            )
+        ''')
+        
         initial_tables = [
-            # Grand Ballroom
             ("GB-01", "Grand Ballroom Suite 1", 8, "Grand Ballroom"),
             ("GB-02", "Grand Ballroom Suite 2", 10, "Grand Ballroom"),
             ("GB-03", "Grand Ballroom Imperial", 12, "Grand Ballroom"),
             ("GB-04", "Grand Ballroom Table 4", 6, "Grand Ballroom"),
             ("GB-05", "Grand Ballroom Table 5", 6, "Grand Ballroom"),
-            # Garden Terrace
             ("GT-01", "Garden Terrace Alcove 1", 2, "Garden Terrace"),
             ("GT-02", "Garden Terrace Alcove 2", 4, "Garden Terrace"),
             ("GT-03", "Botanical Canopy A", 4, "Garden Terrace"),
             ("GT-04", "Botanical Canopy B", 6, "Garden Terrace"),
             ("GT-05", "Fountain View Table 1", 2, "Garden Terrace"),
             ("GT-06", "Fountain View Table 2", 4, "Garden Terrace"),
-            # Penthouse Suite
             ("PH-01", "Skyline Penthouse Alpha", 6, "Penthouse Suite"),
             ("PH-02", "Skyline Penthouse Beta", 8, "Penthouse Suite"),
             ("PH-03", "Crown Observatory", 10, "Penthouse Suite"),
             ("PH-04", "Starlight Lounge 1", 4, "Penthouse Suite"),
             ("PH-05", "Starlight Lounge 2", 6, "Penthouse Suite"),
-            # Wine Cellar
             ("WC-01", "Sommelier Vault 1", 2, "Wine Cellar"),
             ("WC-02", "Sommelier Vault 2", 4, "Wine Cellar"),
             ("WC-03", "Vintage Reserve Table A", 6, "Wine Cellar"),
             ("WC-04", "Vintage Reserve Table B", 6, "Wine Cellar"),
-            # VIP Lounge
             ("VIP-01", "Royal Sovereign Suite", 12, "VIP Lounge"),
             ("VIP-02", "Diplomatic Chamber", 10, "VIP Lounge"),
             ("VIP-03", "Executive Alcove A", 4, "VIP Lounge"),
@@ -87,10 +75,33 @@ def init_db():
         ]
         cursor.executemany("INSERT INTO tables (code, name, seats, zone, status) VALUES (?, ?, ?, ?, 'available')", initial_tables)
         conn.commit()
-    conn.close()
-
-# Initialize Database on Startup
-init_db()
+    else:
+        # Ensure table exists even if file exists
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tables (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                code TEXT UNIQUE,
+                name TEXT,
+                seats INTEGER,
+                zone TEXT,
+                status TEXT DEFAULT 'available'
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS reservations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                table_id INTEGER,
+                customer_name TEXT,
+                phone TEXT,
+                guests INTEGER,
+                timestamp TEXT,
+                FOREIGN KEY(table_id) REFERENCES tables(id)
+            )
+        ''')
+        conn.commit()
+        
+    return conn
 
 # Full HTML Luxury Enterprise Template with Analytics, Search, and Notification logs
 HTML_TEMPLATE = """
