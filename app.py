@@ -1,109 +1,43 @@
 ﻿from flask import Flask, render_template_string, request, redirect, url_for, Response
-import sqlite3
 from datetime import datetime
 import io
 import csv
-import os
 
 app = Flask(__name__)
 
-# Vercel serverless environment mein hamesha /tmp use hoga
-def get_db_path():
-    if os.path.exists("/tmp"):
-        return "/tmp/restaurant.db"
-    return "restaurant.db"
+# In-Memory Database State for Vercel Serverless Reliability
+MEMORY_TABLES = [
+    {"id": 1, "code": "GB-01", "name": "Grand Ballroom Suite 1", "seats": 8, "zone": "Grand Ballroom", "status": "available"},
+    {"id": 2, "code": "GB-02", "name": "Grand Ballroom Suite 2", "seats": 10, "zone": "Grand Ballroom", "status": "available"},
+    {"id": 3, "code": "GB-03", "name": "Grand Ballroom Imperial", "seats": 12, "zone": "Grand Ballroom", "status": "available"},
+    {"id": 4, "code": "GB-04", "name": "Grand Ballroom Table 4", "seats": 6, "zone": "Grand Ballroom", "status": "available"},
+    {"id": 5, "code": "GB-05", "name": "Grand Ballroom Table 5", "seats": 6, "zone": "Grand Ballroom", "status": "available"},
+    {"id": 6, "code": "GT-01", "name": "Garden Terrace Alcove 1", "seats": 2, "zone": "Garden Terrace", "status": "available"},
+    {"id": 7, "code": "GT-02", "name": "Garden Terrace Alcove 2", "seats": 4, "zone": "Garden Terrace", "status": "available"},
+    {"id": 8, "code": "GT-03", "name": "Botanical Canopy A", "seats": 4, "zone": "Garden Terrace", "status": "available"},
+    {"id": 9, "code": "GT-04", "name": "Botanical Canopy B", "seats": 6, "zone": "Garden Terrace", "status": "available"},
+    {"id": 10, "code": "GT-05", "name": "Fountain View Table 1", "seats": 2, "zone": "Garden Terrace", "status": "available"},
+    {"id": 11, "code": "GT-06", "name": "Fountain View Table 2", "seats": 4, "zone": "Garden Terrace", "status": "available"},
+    {"id": 12, "code": "PH-01", "name": "Skyline Penthouse Alpha", "seats": 6, "zone": "Penthouse Suite", "status": "available"},
+    {"id": 13, "code": "PH-02", "name": "Skyline Penthouse Beta", "seats": 8, "zone": "Penthouse Suite", "status": "available"},
+    {"id": 14, "code": "PH-03", "name": "Crown Observatory", "seats": 10, "zone": "Penthouse Suite", "status": "available"},
+    {"id": 15, "code": "PH-04", "name": "Starlight Lounge 1", "seats": 4, "zone": "Penthouse Suite", "status": "available"},
+    {"id": 16, "code": "PH-05", "name": "Starlight Lounge 2", "seats": 6, "zone": "Penthouse Suite", "status": "available"},
+    {"id": 17, "code": "WC-01", "name": "Sommelier Vault 1", "seats": 2, "zone": "Wine Cellar", "status": "available"},
+    {"id": 18, "code": "WC-02", "name": "Sommelier Vault 2", "seats": 4, "zone": "Wine Cellar", "status": "available"},
+    {"id": 19, "code": "WC-03", "name": "Vintage Reserve Table A", "seats": 6, "zone": "Wine Cellar", "status": "available"},
+    {"id": 20, "code": "WC-04", "name": "Vintage Reserve Table B", "seats": 6, "zone": "Wine Cellar", "status": "available"},
+    {"id": 21, "code": "VIP-01", "name": "Royal Sovereign Suite", "seats": 12, "zone": "VIP Lounge", "status": "available"},
+    {"id": 22, "code": "VIP-02", "name": "Diplomatic Chamber", "seats": 10, "zone": "VIP Lounge", "status": "available"},
+    {"id": 23, "code": "VIP-03", "name": "Executive Alcove A", "seats": 4, "zone": "VIP Lounge", "status": "available"},
+    {"id": 24, "code": "VIP-04", "name": "Executive Alcove B", "seats": 4, "zone": "VIP Lounge", "status": "available"},
+    {"id": 25, "code": "VIP-05", "name": "Ambassador Lounge 1", "seats": 6, "zone": "VIP Lounge", "status": "available"},
+    {"id": 26, "code": "VIP-06", "name": "Ambassador Lounge 2", "seats": 6, "zone": "VIP Lounge", "status": "available"}
+]
 
-def get_db():
-    db_path = get_db_path()
-    db_exists = os.path.exists(db_path)
-    
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    
-    # Lazy Initialization: Agar file nahi bani ya tables nahi hain, toh runtime par create karo
-    if not db_exists:
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS tables (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                code TEXT UNIQUE,
-                name TEXT,
-                seats INTEGER,
-                zone TEXT,
-                status TEXT DEFAULT 'available'
-            )
-        ''')
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS reservations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                table_id INTEGER,
-                customer_name TEXT,
-                phone TEXT,
-                guests INTEGER,
-                timestamp TEXT,
-                FOREIGN KEY(table_id) REFERENCES tables(id)
-            )
-        ''')
-        
-        initial_tables = [
-            ("GB-01", "Grand Ballroom Suite 1", 8, "Grand Ballroom"),
-            ("GB-02", "Grand Ballroom Suite 2", 10, "Grand Ballroom"),
-            ("GB-03", "Grand Ballroom Imperial", 12, "Grand Ballroom"),
-            ("GB-04", "Grand Ballroom Table 4", 6, "Grand Ballroom"),
-            ("GB-05", "Grand Ballroom Table 5", 6, "Grand Ballroom"),
-            ("GT-01", "Garden Terrace Alcove 1", 2, "Garden Terrace"),
-            ("GT-02", "Garden Terrace Alcove 2", 4, "Garden Terrace"),
-            ("GT-03", "Botanical Canopy A", 4, "Garden Terrace"),
-            ("GT-04", "Botanical Canopy B", 6, "Garden Terrace"),
-            ("GT-05", "Fountain View Table 1", 2, "Garden Terrace"),
-            ("GT-06", "Fountain View Table 2", 4, "Garden Terrace"),
-            ("PH-01", "Skyline Penthouse Alpha", 6, "Penthouse Suite"),
-            ("PH-02", "Skyline Penthouse Beta", 8, "Penthouse Suite"),
-            ("PH-03", "Crown Observatory", 10, "Penthouse Suite"),
-            ("PH-04", "Starlight Lounge 1", 4, "Penthouse Suite"),
-            ("PH-05", "Starlight Lounge 2", 6, "Penthouse Suite"),
-            ("WC-01", "Sommelier Vault 1", 2, "Wine Cellar"),
-            ("WC-02", "Sommelier Vault 2", 4, "Wine Cellar"),
-            ("WC-03", "Vintage Reserve Table A", 6, "Wine Cellar"),
-            ("WC-04", "Vintage Reserve Table B", 6, "Wine Cellar"),
-            ("VIP-01", "Royal Sovereign Suite", 12, "VIP Lounge"),
-            ("VIP-02", "Diplomatic Chamber", 10, "VIP Lounge"),
-            ("VIP-03", "Executive Alcove A", 4, "VIP Lounge"),
-            ("VIP-04", "Executive Alcove B", 4, "VIP Lounge"),
-            ("VIP-05", "Ambassador Lounge 1", 6, "VIP Lounge"),
-            ("VIP-06", "Ambassador Lounge 2", 6, "VIP Lounge")
-        ]
-        cursor.executemany("INSERT INTO tables (code, name, seats, zone, status) VALUES (?, ?, ?, ?, 'available')", initial_tables)
-        conn.commit()
-    else:
-        # Ensure table exists even if file exists
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS tables (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                code TEXT UNIQUE,
-                name TEXT,
-                seats INTEGER,
-                zone TEXT,
-                status TEXT DEFAULT 'available'
-            )
-        ''')
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS reservations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                table_id INTEGER,
-                customer_name TEXT,
-                phone TEXT,
-                guests INTEGER,
-                timestamp TEXT,
-                FOREIGN KEY(table_id) REFERENCES tables(id)
-            )
-        ''')
-        conn.commit()
-        
-    return conn
+MEMORY_RESERVATIONS = []
+reservation_id_counter = 1
 
-# Full HTML Luxury Enterprise Template with Analytics, Search, and Notification logs
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -132,8 +66,6 @@ HTML_TEMPLATE = """
             padding: 30px 20px;
         }
         .wrapper { max-width: 1400px; margin: 0 auto; }
-        
-        /* Hero Header */
         .hero-header {
             display: flex;
             justify-content: space-between;
@@ -154,7 +86,6 @@ HTML_TEMPLATE = """
         }
         .hero-title p { color: var(--accent-gold); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
-        
         .btn-export {
             background: rgba(212, 175, 55, 0.15);
             border: 1px solid rgba(212, 175, 55, 0.4);
@@ -167,7 +98,6 @@ HTML_TEMPLATE = """
             transition: all 0.2s;
         }
         .btn-export:hover { background: rgba(212, 175, 55, 0.3); }
-
         .server-badge {
             background: rgba(16, 185, 129, 0.15);
             border: 1px solid rgba(16, 185, 129, 0.3);
@@ -181,8 +111,6 @@ HTML_TEMPLATE = """
             gap: 8px;
         }
         .server-badge::before { content: ""; width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 10px #34d399; }
-
-        /* Analytics Metric Cards */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -198,8 +126,6 @@ HTML_TEMPLATE = """
         }
         .metric-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; }
         .metric-value { font-size: 24px; font-weight: 700; font-family: 'Playfair Display', serif; color: #fff; }
-
-        /* Notification Banner */
         .notification-banner {
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.3);
@@ -212,8 +138,6 @@ HTML_TEMPLATE = """
             align-items: center;
             gap: 10px;
         }
-
-        /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -221,7 +145,6 @@ HTML_TEMPLATE = """
             margin-bottom: 25px;
         }
         @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -237,8 +160,6 @@ HTML_TEMPLATE = """
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
         }
-
-        /* Zone Tabs */
         .zone-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
         .zone-tab {
             background: rgba(255, 255, 255, 0.03);
@@ -252,8 +173,6 @@ HTML_TEMPLATE = """
             transition: all 0.2s;
         }
         .zone-tab.active, .zone-tab:hover { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
-
-        /* Tables Grid View */
         .tables-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -264,7 +183,6 @@ HTML_TEMPLATE = """
         }
         .tables-container::-webkit-scrollbar { width: 6px; }
         .tables-container::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
-
         .table-box {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
@@ -277,11 +195,8 @@ HTML_TEMPLATE = """
         .table-name { font-weight: 600; font-size: 13px; color: #fff; }
         .table-zone { font-size: 10px; color: var(--accent-gold); margin-top: 2px; }
         .table-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: var(--text-muted); }
-        
         .badge-avail { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 700; }
         .badge-res { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 700; }
-
-        /* Form Controls */
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px; }
         .form-control {
@@ -297,7 +212,6 @@ HTML_TEMPLATE = """
         }
         .form-control:focus { border-color: var(--accent-gold); }
         select.form-control option { background: #0f141f; color: #fff; }
-
         .btn-luxury {
             background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
             color: #000000;
@@ -313,16 +227,12 @@ HTML_TEMPLATE = """
             margin-top: 5px;
         }
         .btn-luxury:hover { background: linear-gradient(135deg, #e6c555 0%, #d4af37 100%); transform: translateY(-1px); }
-
-        /* Ledger & Search */
         .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .search-input { background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 12px; width: 260px; outline: none; }
         .search-input:focus { border-color: var(--accent-gold); }
-
         .archive-table { width: 100%; border-collapse: collapse; text-align: left; }
         .archive-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 600; }
         .archive-table td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; color: #e5e7eb; }
-        
         .btn-cancel {
             background: rgba(239, 68, 68, 0.15);
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -340,7 +250,6 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div class="wrapper">
-        <!-- Hero Header -->
         <div class="hero-header">
             <div class="hero-title">
                 <h1>L'Étoile Noir & Grand Gastronomy</h1>
@@ -352,7 +261,6 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <!-- Live Analytics Metrics Row -->
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total Elite Suites</div>
@@ -378,18 +286,16 @@ HTML_TEMPLATE = """
         </div>
         {% endif %}
 
-        <!-- Dashboard Grid -->
         <div class="dashboard-grid">
-            <!-- Left Panel: Table Management & Zone Tabs -->
             <div class="card">
                 <h3>Real-Time Floor Status</h3>
                 <div class="zone-tabs">
                     <a href="/?zone=All" class="zone-tab {% if current_zone == 'All' %}active{% endif %}">All Zones</a>
-                    <a href="/?zone=Grand Ballroom" class="zone-tab {% if current_zone == 'Grand Ballroom' %}active{% endif %}">Grand Ballroom</a>
-                    <a href="/?zone=Garden Terrace" class="zone-tab {% if current_zone == 'Garden Terrace' %}active{% endif %}">Garden Terrace</a>
-                    <a href="/?zone=Penthouse Suite" class="zone-tab {% if current_zone == 'Penthouse Suite' %}active{% endif %}">Penthouse Suite</a>
-                    <a href="/?zone=Wine Cellar" class="zone-tab {% if current_zone == 'Wine Cellar' %}active{% endif %}">Wine Cellar</a>
-                    <a href="/?zone=VIP Lounge" class="zone-tab {% if current_zone == 'VIP Lounge' %}active{% endif %}">VIP Lounge</a>
+                    <a href="/?zone=Grand%20Ballroom" class="zone-tab {% if current_zone == 'Grand Ballroom' %}active{% endif %}">Grand Ballroom</a>
+                    <a href="/?zone=Garden%20Terrace" class="zone-tab {% if current_zone == 'Garden Terrace' %}active{% endif %}">Garden Terrace</a>
+                    <a href="/?zone=Penthouse%20Suite" class="zone-tab {% if current_zone == 'Penthouse Suite' %}active{% endif %}">Penthouse Suite</a>
+                    <a href="/?zone=Wine%20Cellar" class="zone-tab {% if current_zone == 'Wine Cellar' %}active{% endif %}">Wine Cellar</a>
+                    <a href="/?zone=VIP%20Lounge" class="zone-tab {% if current_zone == 'VIP Lounge' %}active{% endif %}">VIP Lounge</a>
                 </div>
 
                 <div class="tables-container">
@@ -417,7 +323,6 @@ HTML_TEMPLATE = """
                 </div>
             </div>
 
-            <!-- Right Panel: Concierge Booking Desk -->
             <div class="card">
                 <h3>VIP Concierge Desk</h3>
                 <form method="POST" action="/book">
@@ -425,7 +330,7 @@ HTML_TEMPLATE = """
                         <label>Select Available Suite / Table</label>
                         <select name="table_id" class="form-control" required>
                             {% set available_found = namespace(val=false) %}
-                            {% for t in tables %}
+                            {% for t in MEMORY_TABLES %}
                                 {% if t.status == 'available' %}
                                     {% set available_found.val = true %}
                                     <option value="{{ t.id }}">{{ t.name }} ({{ t.zone }} - {{ t.seats }} S)</option>
@@ -439,7 +344,7 @@ HTML_TEMPLATE = """
 
                     <div class="form-group">
                         <label>Distinguished Guest Name</label>
-                        <input type="text" name="customer_name" class="form-control" value="Muhammad Ibraheem Ashraf" required>
+                        <input type="text" name="customer_name" class="form-control" value="" placeholder="Enter guest name..." required>
                     </div>
 
                     <div class="form-group">
@@ -457,7 +362,6 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <!-- Confirmed Reservations Ledger with Search Bar -->
         <div class="card">
             <div class="ledger-header">
                 <h3>Confirmed Reservations Ledger</h3>
@@ -499,7 +403,7 @@ HTML_TEMPLATE = """
                     </tbody>
                 </table>
             {% else %}
-                <div class="empty-state">No matching reservations recorded in the secure database ledger.</div>
+                <div class="empty-state">No matching reservations recorded in the secure ledger.</div>
             {% endif %}
         </div>
     </div>
@@ -513,30 +417,17 @@ def index():
     search_query = request.args.get("search", "").strip()
     notification = request.args.get("note", "")
     
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    # Fetch tables based on zone filter
+    # Filter tables based on zone
     if zone_filter == "All":
-        cursor.execute("SELECT * FROM tables")
+        tables = MEMORY_TABLES
     else:
-        cursor.execute("SELECT * FROM tables WHERE zone = ?", (zone_filter,))
-    tables = cursor.fetchall()
-    
-    # Fetch metrics
-    cursor.execute("SELECT COUNT(*) FROM tables")
-    total_suites = cursor.fetchone()[0]
-    
-    cursor.execute("SELECT COUNT(*) FROM tables WHERE status = 'reserved'")
-    reserved_suites = cursor.fetchone()[0]
-    
+        tables = [t for t in MEMORY_TABLES if t["zone"] == zone_filter]
+        
+    total_suites = len(MEMORY_TABLES)
+    reserved_suites = sum(1 for t in MEMORY_TABLES if t["status"] == "reserved")
     occupancy_rate = round((reserved_suites / total_suites * 100), 1) if total_suites > 0 else 0
-    
-    cursor.execute("SELECT SUM(guests) FROM reservations")
-    total_guests = cursor.fetchone()[0] or 0
-    
-    cursor.execute("SELECT COUNT(*) FROM reservations")
-    active_count = cursor.fetchone()[0]
+    total_guests = sum(int(r["guests"]) for r in MEMORY_RESERVATIONS)
+    active_count = len(MEMORY_RESERVATIONS)
     
     metrics = {
         "total_suites": total_suites,
@@ -545,104 +436,97 @@ def index():
         "total_guests": total_guests
     }
     
-    # Fetch reservations with optional search query
+    # Filter reservations for search
+    reservations = MEMORY_RESERVATIONS
     if search_query:
-        cursor.execute('''
-            SELECT r.*, t.name as table_name, t.code, t.zone 
-            FROM reservations r 
-            JOIN tables t ON r.table_id = t.id 
-            WHERE r.customer_name LIKE ? OR r.phone LIKE ?
-            ORDER BY r.id DESC
-        ''', (f"%{search_query}%", f"%{search_query}%"))
-    else:
-        cursor.execute('''
-            SELECT r.*, t.name as table_name, t.code, t.zone 
-            FROM reservations r 
-            JOIN tables t ON r.table_id = t.id 
-            ORDER BY r.id DESC
-        ''')
-    reservations = cursor.fetchall()
-    conn.close()
-    
+        reservations = [
+            r for r in MEMORY_RESERVATIONS 
+            if search_query.lower() in r["customer_name"].lower() or search_query in r["phone"]
+        ]
+        
     return render_template_string(
-        HTML_TEMPLATE, 
-        tables=tables, 
-        reservations=reservations, 
-        metrics=metrics, 
-        current_zone=zone_filter, 
+        HTML_TEMPLATE,
+        tables=tables,
+        reservations=reservations,
+        metrics=metrics,
+        current_zone=zone_filter,
         search_query=search_query,
-        notification=notification
+        notification=notification,
+        MEMORY_TABLES=MEMORY_TABLES
     )
 
 @app.route("/book", methods=["POST"])
 def book():
-    table_id = request.form.get("table_id")
+    global reservation_id_counter
+    table_id_str = request.form.get("table_id")
     customer_name = request.form.get("customer_name")
     phone = request.form.get("phone")
     guests = request.form.get("guests")
     
-    if not table_id:
+    if not table_id_str:
         return redirect(url_for("index"))
         
+    table_id = int(table_id_str)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    # Update table status to reserved
-    cursor.execute("UPDATE tables SET status = 'reserved' WHERE id = ?", (table_id,))
-    
-    # Insert reservation record
-    cursor.execute('''
-        INSERT INTO reservations (table_id, customer_name, phone, guests, timestamp)
-        VALUES (?, ?, ?, ?, ?)
-    ''', (table_id, customer_name, phone, guests, timestamp))
-    
-    conn.commit()
-    conn.close()
-    
-    note = f"Simulated Notification Dispatched for {customer_name} at {phone}."
+    # Find table and update status
+    target_table = None
+    for t in MEMORY_TABLES:
+        if t["id"] == table_id:
+            t["status"] = "reserved"
+            target_table = t
+            break
+            
+    if target_table:
+        reservation = {
+            "id": reservation_id_counter,
+            "table_id": table_id,
+            "table_name": target_table["name"],
+            "code": target_table["code"],
+            "zone": target_table["zone"],
+            "customer_name": customer_name,
+            "phone": phone,
+            "guests": guests,
+            "timestamp": timestamp
+        }
+        MEMORY_RESERVATIONS.insert(0, reservation)
+        reservation_id_counter += 1
+        
+    note = f"VIP Suite successfully secured and confirmed for {customer_name}."
     return redirect(url_for("index", note=note))
 
 @app.route("/cancel/<int:res_id>", methods=["POST"])
 def cancel(res_id):
-    conn = get_db()
-    cursor = conn.cursor()
+    global MEMORY_RESERVATIONS
     
-    # Get table_id associated with this reservation
-    cursor.execute("SELECT table_id FROM reservations WHERE id = ?", (res_id,))
-    res = cursor.fetchone()
-    
-    if res:
-        table_id = res["table_id"]
-        # Free the table back to available
-        cursor.execute("UPDATE tables SET status = 'available' WHERE id = ?", (table_id,))
-        # Delete reservation
-        cursor.execute("DELETE FROM reservations WHERE id = ?", (res_id,))
-        conn.commit()
+    # Find reservation to get table_id
+    target_res = None
+    for r in MEMORY_RESERVATIONS:
+        if r["id"] == res_id:
+            target_res = r
+            break
+            
+    if target_res:
+        t_id = target_res["table_id"]
+        # Free table status back to available
+        for t in MEMORY_TABLES:
+            if t["id"] == t_id:
+                t["status"] = "available"
+                break
+        # Remove from active reservations
+        MEMORY_RESERVATIONS = [r for r in MEMORY_RESERVATIONS if r["id"] != res_id]
         
-    conn.close()
     note = "Reservation successfully cancelled and suite released back to available status."
     return redirect(url_for("index", note=note))
 
 @app.route("/export")
 def export_csv():
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT r.id, r.customer_name, t.name as table_name, t.code, t.zone, r.phone, r.guests, r.timestamp 
-        FROM reservations r 
-        JOIN tables t ON r.table_id = t.id
-    ''')
-    rows = cursor.fetchall()
-    conn.close()
-    
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(["Reservation ID", "Guest Name", "Suite Name", "Code", "Zone", "Phone", "Guests", "Timestamp"])
     
-    for row in rows:
-        writer.writerow(list(row))
+    for r in MEMORY_RESERVATIONS:
+        writer.writerow([r["id"], r["customer_name"], r["table_name"], r["code"], r["zone"], r["phone"], r["guests"], r["timestamp"]])
         
     output.seek(0)
     return Response(
