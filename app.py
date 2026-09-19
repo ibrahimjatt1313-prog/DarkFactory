@@ -6,6 +6,8 @@ import csv
 import os
 import shutil
 
+app = Flask(__name__)
+
 DB_NAME = "restaurant.db"
 TMP_DB_NAME = "/tmp/restaurant.db"
 
@@ -591,7 +593,7 @@ def book():
     conn.commit()
     conn.close()
     
-    note = f"SMS via Twilio sent to {phone} & Confirmation email dispatched via SendGrid for {customer_name}."
+    note = f"Simulated Notification Dispatched for {customer_name} at {phone}."
     return redirect(url_for("index", note=note))
 
 @app.route("/cancel/<int:res_id>", methods=["POST"])
