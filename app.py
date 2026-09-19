@@ -3,12 +3,21 @@ import sqlite3
 from datetime import datetime
 import io
 import csv
+import os
+import shutil
 
-app = Flask(__name__)
 DB_NAME = "restaurant.db"
+TMP_DB_NAME = "/tmp/restaurant.db"
+
+if os.environ.get('VERCEL'):
+    if not os.path.exists(TMP_DB_NAME) and os.path.exists(DB_NAME):
+        shutil.copy(DB_NAME, TMP_DB_NAME)
+    DB_PATH = TMP_DB_NAME
+else:
+    DB_PATH = DB_NAME
 
 def get_db():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
