@@ -2,44 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DarkFactory - Table Reservation UI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkFactory - Restaurant Reservations</title>
+    <!-- Tailwind CSS CDN for Modern Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 90%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h2>??? DarkFactory - Restaurant Reservations</h2>
-        <h3>Available Tables</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Table ID</th>
-                    <th>Seats</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for table in tables %}
-                <tr>
-                    <td>{{ table.id }}</td>
-                    <td>{{ table.seats }}</td>
-                    <td>{{ table.status }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="form-group">
-            <h3>Make a Reservation</h3>
-            <form method="POST" action="/reserve">
-                <label for="table_id">Select Table ID:</label>
-                <input type="number" id="table_id" name="table_id" required>
-                <label for="customer_name">Customer Name:</label>
-                <input type="text" id="customer_name" name="customer_name" required>
-                <button type="submit">Book Table</button>
-            </form>
+<body class="min-h-screen text-slate-100 flex items-center justify-center p-6">
+    <div class="w-full max-w-4xl space-y-8">
+        
+        <!-- Header Section -->
+        <div class="text-center space-y-2">
+            <h2 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                ⚡ DarkFactory - Restaurant Reservations
+            </h2>
+            <p class="text-slate-400 text-sm">Industrial Autonomous Table Management & Dispatch</p>
         </div>
-        {% if message %}
-        <p class="msg" style="color: {{ "green" if "Success" in message else "red" }};">{{ message }}</p>
-        {% endif %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Tables Status Section -->
+            <div class="glass-card p-6 rounded-2xl shadow-2xl space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-slate-200">Available Tables</h3>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Live
+                    </span>
+                </div>
+                
+                <div class="overflow-x-auto rounded-xl border border-slate-700/50">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-800/80 text-slate-400 uppercase tracking-wider text-xs">
+                            <tr>
+                                <th class="px-4 py-3">Table ID</th>
+                                <th class="px-4 py-3">Seats</th>
+                                <th class="px-4 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/40">
+                            {% for table in tables %}
+                            <tr class="hover:bg-slate-800/40 transition-colors">
+                                <td class="px-4 py-3 font-mono font-medium text-cyan-400">#{{ table.id }}</td>
+                                <td class="px-4 py-3">{{ table.seats }} Seats</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 rounded text-xs font-semibold {{ 'bg-emerald-500/10 text-emerald-400' if table.status == 'Available' else 'bg-rose-500/10 text-rose-400' }}">
+                                        {{ table.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reservation Form Section -->
+            <div class="glass-card p-6 rounded-2xl shadow-2xl space-y-4">
+                <h3 class="text-lg font-semibold text-slate-200">Make a Reservation</h3>
+                
+                <form method="POST" action="/reserve" class="space-y-4">
+                    <div>
+                        <label for="table_id" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Select Table ID:</label>
+                        <input type="number" id="table_id" name="table_id" required 
+                            class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-mono transition-all"
+                            placeholder="Enter table number...">
+                    </div>
+
+                    <div>
+                        <label for="customer_name" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Customer Name:</label>
+                        <input type="text" id="customer_name" name="customer_name" required 
+                            class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                            placeholder="Enter full name...">
+                    </div>
+
+                    <button type="submit" 
+                        class="w-full mt-2 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-medium py-2.5 px-4 rounded-lg shadow-lg shadow-indigo-500/25 transition-all transform active:scale-[0.99]">
+                        Book Table & Secure Slot
+                    </button>
+                </form>
+
+                {% if message %}
+                <div class="p-3 rounded-lg text-sm font-medium border {{ 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' if 'Success' in message else 'bg-rose-500/10 border-rose-500/20 text-rose-400' }}">
+                    {{ message }}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
     </div>
 </body>
 </html>
