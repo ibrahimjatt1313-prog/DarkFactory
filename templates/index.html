@@ -102,3 +102,64 @@
     </div>
 </body>
 </html>
+<!-- Figma-Style Dashboard Container -->
+<div class="min-h-screen bg-[#F9FAFB] text-slate-900 p-8 font-sans">
+  
+  <!-- Header Section -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Dashboard Overview</h1>
+      <p class="text-sm text-slate-500 mt-1">Monitor your multi-agent stations and system metrics.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 transition">
+        Export Data
+      </button>
+      <button class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-700 transition">
+        + New Station
+      </button>
+    </div>
+  </div>
+
+  <!-- Metric Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    
+    <!-- Card 1 -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-sm font-medium text-slate-500">Active Stations</span>
+        <span class="px-2.5 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 rounded-full">Live</span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="text-3xl font-bold tracking-tight text-slate-900">48</span>
+        <span class="text-xs font-medium text-emerald-600">+12% from last hour</span>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-sm font-medium text-slate-500">System Load</span>
+        <span class="px-2.5 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 rounded-full">Optimal</span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="text-3xl font-bold tracking-tight text-slate-900">32.4%</span>
+        <span class="text-xs font-medium text-slate-500">Normal range</span>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-sm font-medium text-slate-500">Errors Handled</span>
+        <span class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 rounded-full">Monitored</span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="text-3xl font-bold tracking-tight text-slate-900">0</span>
+        <span class="text-xs font-medium text-emerald-600">All systems clean</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
