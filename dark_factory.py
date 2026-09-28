@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os
 
-app = FastAPI(title="DarkFactory Dashboard", version="1.0.0")
+app = FastAPI(title="L'Étoile Noire & DarkFactory Command Center", version="2.1.0")
 
 # Ensure required directories exist to prevent startup crashes
 os.makedirs("static", exist_ok=True)
@@ -15,32 +15,53 @@ os.makedirs("outputs", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-@app.get("/", response_class=HTMLResponse)
-async def read_dashboard(request: Request):
-    output_content = "System initialized and waiting for execution..."
-    
-    file_path = "outputs/reviewed_result.txt"
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                output_content = f.read()
-        except Exception as e:
-            output_content = f"Error reading file: {str(e)}"
+# Mock database for stations / tables
+TABLES_DB = [
+    {"id": 1, "seats": 2, "status": "Available"},
+    {"id": 2, "seats": 4, "status": "Reserved"},
+    {"id": 3, "seats": 6, "status": "Available"},
+    {"id": 4, "seats": 8, "status": "Available"},
+    {"id": 5, "seats": 2, "status": "Reserved"},
+]
 
+@app.get("/", response_class=HTMLResponse)
+async def read_dashboard(request: Request, message: str = None):
     return templates.TemplateResponse("index.html", {
         "request": request, 
-        "output_content": output_content
+        "tables": TABLES_DB,
+        "message": message
     })
 
-@app.post("/run-process", response_class=HTMLResponse)
-async def run_process(request: Request, stage: str = Form(...)):
-    result_message = f"Successfully executed {stage} pipeline!"
-    
+@app.post("/reserve", response_class=HTMLResponse)
+async def reserve_table(
+    request: Request, 
+    table_id: int = Form(...), 
+    customer_name: str = Form(...),
+    country_code: str = Form(...),
+    phone_number: str = Form(...)
+):
+    # Find and update table status
+    table_found = False
+    for table in TABLES_DB:
+        if table["id"] == table_id:
+            table_found = True
+            if table["status"] == "Reserved":
+                message = f"⚠️ Warning: Station #{table_id} is already reserved!"
+            else:
+                table["status"] = "Reserved"
+                full_phone = f"{country_code} {phone_number}"
+                message = f"✅ Success: Slot #{table_id} securely locked for {customer_name} ({full_phone})."
+            break
+            
+    if not table_found:
+        message = f"⚠️ Error: Station #{table_id} does not exist in the matrix."
+
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "output_content": result_message
+        "tables": TABLES_DB,
+        "message": message
     })
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("dark_factory:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("dark_factory_app:app", host="127.0.0.1", port=8000, reload=True)
