@@ -3,163 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkFactory - Restaurant Reservations</title>
-    <!-- Tailwind CSS CDN for Modern Styling -->
+    <title>DarkFactory - Autonomous Restaurant Command Center</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+        
         body {
-            background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 90%);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #030712;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.07) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.07) 0px, transparent 50%);
+            font-family: 'Inter', sans-serif;
         }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.2);
+        }
+        /* Custom Scrollbar for Terminal & Tables */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(3, 7, 18, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 3px;
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-100 flex items-center justify-center p-6">
-    <div class="w-full max-w-4xl space-y-8">
+<body class="min-h-screen text-slate-100 p-4 md:p-6 lg:p-8 flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950">
+    
+    <div class="w-full max-w-7xl mx-auto space-y-6">
         
-        <!-- Header Section -->
-        <div class="text-center space-y-2">
-            <h2 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-                ⚡ DarkFactory - Restaurant Reservations
-            </h2>
-            <p class="text-slate-400 text-sm">Industrial Autonomous Table Management & Dispatch</p>
-        </div>
+        <!-- Top Command Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center glass-panel p-5 rounded-2xl gap-4 shadow-xl">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <span class="text-xl">⚡</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent flex items-center gap-2">
+                        DARKFACTORY <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">AI CORE v3.0</span>
+                    </h1>
+                    <p class="text-slate-400 text-xs font-mono">Autonomous Reservation & Atomic Dispatch Engine</p>
+                </div>
+            </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Live Telemetry Badges -->
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 font-mono text-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-slate-400">Node:</span>
+                    <span class="text-emerald-400 font-semibold">ACTIVE</span>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 font-mono text-xs">
+                    <span class="text-slate-400">Concurrency Locks:</span>
+                    <span class="text-cyan-400 font-semibold">ATOMIC-SAFE</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- Tables Status Section -->
-            <div class="glass-card p-6 rounded-2xl shadow-2xl space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-slate-200">Available Tables</h3>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Live
-                    </span>
-                </div>
+            <!-- Left Column: Station Matrix & Live Feed (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
                 
-                <div class="overflow-x-auto rounded-xl border border-slate-700/50">
-                    <table class="w-full text-left text-sm text-slate-300">
-                        <thead class="bg-slate-800/80 text-slate-400 uppercase tracking-wider text-xs">
-                            <tr>
-                                <th class="px-4 py-3">Table ID</th>
-                                <th class="px-4 py-3">Seats</th>
-                                <th class="px-4 py-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-700/40">
-                            {% for table in tables %}
-                            <tr class="hover:bg-slate-800/40 transition-colors">
-                                <td class="px-4 py-3 font-mono font-medium text-cyan-400">#{{ table.id }}</td>
-                                <td class="px-4 py-3">{{ table.seats }} Seats</td>
-                                <td class="px-4 py-3">
-                                    <span class="px-2 py-1 rounded text-xs font-semibold {{ 'bg-emerald-500/10 text-emerald-400' if table.status == 'Available' else 'bg-rose-500/10 text-rose-400' }}">
-                                        {{ table.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <!-- Station Matrix Card -->
+                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Live Station Matrix</h2>
+                            <p class="text-xs text-slate-400">Real-time table synchronization with DB</p>
+                        </div>
+                        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700/60">
+                            Database: <span class="text-cyan-400">restaurant.db</span>
+                        </span>
+                    </div>
+                    
+                    <div class="overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-950/50">
+                        <table class="w-full text-left text-sm text-slate-300 font-mono">
+                            <thead class="bg-slate-900/90 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+                                <tr>
+                                    <th class="px-4 py-3">Table Identifier</th>
+                                    <th class="px-4 py-3">Capacity</th>
+                                    <th class="px-4 py-3">Current Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/40">
+                                {% for table in tables %}
+                                <tr class="hover:bg-slate-900/60 transition-colors">
+                                    <td class="px-4 py-3 font-semibold text-cyan-400 flex items-center gap-2">
+                                        <span class="text-slate-600">#</span>{{ table.id }}
+                                    </td>
+                                    <td class="px-4 py-3 text-slate-300 font-medium">{{ table.seats }} Seats</td>
+                                    <td class="px-4 py-3">
+                                        {% if table.status == 'Available' %}
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Available
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Reserved
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+                <!-- Simulated Autonomous Terminal Feed -->
+                <div class="glass-panel p-5 rounded-2xl shadow-xl space-y-3 font-mono">
+                    <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800/80 pb-2">
+                        <span class="flex items-center gap-2 font-semibold text-slate-300">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> SYSTEM EVENT STREAM
+                        </span>
+                        <span>SECURE_SOCKET_OK</span>
+                    </div>
+                    <div class="bg-slate-950/80 rounded-xl p-3.5 text-xs text-slate-400 space-y-1.5 border border-slate-900 overflow-hidden">
+                        <p class="text-emerald-400 font-medium">[INFO] Autonomous engine initialized successfully.</p>
+                        <p class="text-slate-400">[TRACE] DB Connection established on SQLite backend.</p>
+                        <p class="text-cyan-400">[WATCH] Listening for incoming table dispatch sequences...</p>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Reservation Form Section -->
-            <div class="glass-card p-6 rounded-2xl shadow-2xl space-y-4">
-                <h3 class="text-lg font-semibold text-slate-200">Make a Reservation</h3>
+            <!-- Right Column: Reservation Action Panel (5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
                 
-                <form method="POST" action="/reserve" class="space-y-4">
+                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-6 flex flex-col justify-between border-t-2 border-t-cyan-500">
                     <div>
-                        <label for="table_id" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Select Table ID:</label>
-                        <input type="number" id="table_id" name="table_id" required 
-                            class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-mono transition-all"
-                            placeholder="Enter table number...">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Slot Dispatch Console</h2>
+                            <span class="text-[11px] font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded border border-indigo-500/20">POST /reserve</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-5">Execute real-time table allocation with atomic locking mechanisms to prevent race conditions.</p>
+                        
+                        <form method="POST" action="/reserve" class="space-y-4 font-mono">
+                            <div>
+                                <label for="table_id" class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Target Table ID:</label>
+                                <input type="number" id="table_id" name="table_id" required 
+                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm font-semibold"
+                                    placeholder="Enter table ID (e.g. 1)...">
+                            </div>
+
+                            <div>
+                                <label for="customer_name" class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Operator / Guest Name:</label>
+                                <input type="text" id="customer_name" name="customer_name" required 
+                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm font-semibold"
+                                    placeholder="Enter full guest name...">
+                            </div>
+
+                            <button type="submit" 
+                                class="w-full mt-2 bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-xl shadow-cyan-500/25 transition-all transform active:scale-[0.99] text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                                <span>⚡</span> Execute Secure Reservation
+                            </button>
+                        </form>
                     </div>
 
-                    <div>
-                        <label for="customer_name" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Customer Name:</label>
-                        <input type="text" id="customer_name" name="customer_name" required 
-                            class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
-                            placeholder="Enter full name...">
+                    <!-- Response Message Banner -->
+                    {% if message %}
+                    <div class="mt-4 p-4 rounded-xl text-xs font-mono font-medium border animate-fadeIn {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 glow-emerald' if 'Success' in message or 'Successfully' in message else 'bg-rose-500/10 border-rose-500/30 text-rose-300' }}">
+                        <div class="flex items-start gap-2">
+                            <span class="text-base">{{ '✅' if 'Success' in message or 'Successfully' in message else '⚠️' }}</span>
+                            <div>
+                                <span class="font-bold block uppercase tracking-wide text-[10px] opacity-80">Execution Response:</span>
+                                <span class="mt-0.5 block">{{ message }}</span>
+                            </div>
+                        </div>
                     </div>
-
-                    <button type="submit" 
-                        class="w-full mt-2 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-medium py-2.5 px-4 rounded-lg shadow-lg shadow-indigo-500/25 transition-all transform active:scale-[0.99]">
-                        Book Table & Secure Slot
-                    </button>
-                </form>
-
-                {% if message %}
-                <div class="p-3 rounded-lg text-sm font-medium border {{ 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' if 'Success' in message else 'bg-rose-500/10 border-rose-500/20 text-rose-400' }}">
-                    {{ message }}
+                    {% endif %}
                 </div>
-                {% endif %}
+
             </div>
 
         </div>
+
+        <!-- Footer -->
+        <footer class="text-center pt-4 border-t border-slate-800/80 text-slate-500 text-xs font-mono flex flex-col md:flex-row justify-between items-center gap-2">
+            <span>DarkFactory Autonomous Systems &mdash; Hackathon Demo Build</span>
+            <span class="text-slate-400">Powered by Python, Flask/FastAPI & Tailwind CSS</span>
+        </footer>
+
     </div>
 </body>
 </html>
-<!-- Figma-Style Dashboard Container -->
-<div class="min-h-screen bg-[#F9FAFB] text-slate-900 p-8 font-sans">
-  
-  <!-- Header Section -->
-  <div class="flex justify-between items-center mb-8">
-    <div>
-      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Dashboard Overview</h1>
-      <p class="text-sm text-slate-500 mt-1">Monitor your multi-agent stations and system metrics.</p>
-    </div>
-    <div class="flex items-center gap-3">
-      <button class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 transition">
-        Export Data
-      </button>
-      <button class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-700 transition">
-        + New Station
-      </button>
-    </div>
-  </div>
-
-  <!-- Metric Cards Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    
-    <!-- Card 1 -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-sm font-medium text-slate-500">Active Stations</span>
-        <span class="px-2.5 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 rounded-full">Live</span>
-      </div>
-      <div class="flex items-baseline gap-2">
-        <span class="text-3xl font-bold tracking-tight text-slate-900">48</span>
-        <span class="text-xs font-medium text-emerald-600">+12% from last hour</span>
-      </div>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-sm font-medium text-slate-500">System Load</span>
-        <span class="px-2.5 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 rounded-full">Optimal</span>
-      </div>
-      <div class="flex items-baseline gap-2">
-        <span class="text-3xl font-bold tracking-tight text-slate-900">32.4%</span>
-        <span class="text-xs font-medium text-slate-500">Normal range</span>
-      </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-sm font-medium text-slate-500">Errors Handled</span>
-        <span class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 rounded-full">Monitored</span>
-      </div>
-      <div class="flex items-baseline gap-2">
-        <span class="text-3xl font-bold tracking-tight text-slate-900">0</span>
-        <span class="text-xs font-medium text-emerald-600">All systems clean</span>
-      </div>
-    </div>
-
-  </div>
-
-</div>
