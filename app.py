@@ -10,14 +10,14 @@ app = Flask(__name__)
 # ==========================================
 
 MEMORY_TABLES = [
-    {"id": 1, "code": "DT-01", "name": "Drive-Thru Lane 1", "seats": 4, "zone": "Drive-Thru", "status": "available"},
-    {"id": 2, "code": "DT-02", "name": "Drive-Thru Lane 2", "seats": 4, "zone": "Drive-Thru", "status": "available"},
-    {"id": 3, "code": "FC-101", "name": "Front Counter Station A", "seats": 2, "zone": "Front Counter", "status": "available"},
-    {"id": 4, "code": "FC-102", "name": "Front Counter Station B", "seats": 2, "zone": "Front Counter", "status": "available"},
-    {"id": 5, "code": "KS-01", "name": "Self-Order Kiosk Alpha", "seats": 1, "zone": "Kiosks", "status": "available"},
-    {"id": 6, "code": "KS-02", "name": "Self-Order Kiosk Beta", "seats": 1, "zone": "Kiosks", "status": "available"},
-    {"id": 7, "code": "DL-201", "name": "Global Dispatch Hub 1", "seats": 6, "zone": "Delivery Hub", "status": "available"},
-    {"id": 8, "code": "VIP-01", "name": "Executive Lounge", "seats": 8, "zone": "VIP Lounge", "status": "available"}
+    {"id": 1, "code": "DT-01", "name": "Drive-Thru Lane 1", "seats": 4, "zone": "Drive-Thru", "status": "available", "icon": "fa-car"},
+    {"id": 2, "code": "DT-02", "name": "Drive-Thru Lane 2", "seats": 4, "zone": "Drive-Thru", "status": "available", "icon": "fa-car"},
+    {"id": 3, "code": "FC-101", "name": "Front Counter Station A", "seats": 2, "zone": "Front Counter", "status": "available", "icon": "fa-cash-register"},
+    {"id": 4, "code": "FC-102", "name": "Front Counter Station B", "seats": 2, "zone": "Front Counter", "status": "available", "icon": "fa-cash-register"},
+    {"id": 5, "code": "KS-01", "name": "Self-Order Kiosk Alpha", "seats": 1, "zone": "Kiosks", "status": "available", "icon": "fa-tablet-screen-button"},
+    {"id": 6, "code": "KS-02", "name": "Self-Order Kiosk Beta", "seats": 1, "zone": "Kiosks", "status": "available", "icon": "fa-tablet-screen-button"},
+    {"id": 7, "code": "DL-201", "name": "Global Dispatch Hub 1", "seats": 6, "zone": "Delivery Hub", "status": "available", "icon": "fa-motorcycle"},
+    {"id": 8, "code": "VIP-01", "name": "Executive Lounge", "seats": 8, "zone": "VIP Lounge", "status": "available", "icon": "fa-champagne-glasses"}
 ]
 
 MEMORY_RESERVATIONS = []
@@ -25,275 +25,394 @@ MEMORY_RESERVATIONS = []
 table_id_counter = 9
 reservation_id_counter = 101
 
+# Maximum allowed total stations on the floor for safety & performance
+MAX_TOTAL_STATIONS = 15
+
 # ==========================================
-# COMPREHENSIVE ENTERPRISE UI TEMPLATE
+# COMPREHENSIVE LUXURY ENTERPRISE UI TEMPLATE
 # ==========================================
 
 HTML_TEMPLATE = """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L'Étoile Noire & Grand Gastronomy - Executive Suite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-deep: #0f1117;
-            --bg-card: #181b24;
+            --bg-deep: #090a0f;
+            --bg-card: #131620;
+            --bg-card-hover: #1a1d2b;
             --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.3);
             --accent-brand: #6366f1;
             --accent-hover: #4f46e5;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        [data-theme="light"] {
+            --bg-deep: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8fafc;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-glow: rgba(79, 70, 229, 0.2);
+            --accent-brand: #4f46e5;
+            --accent-hover: #4338ca;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             min-height: 100vh;
-            padding: 25px 20px;
+            padding: 24px 20px;
         }
-        .wrapper { max-width: 1400px; margin: 0 auto; }
+        .wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Hero Header */
         .hero-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 24px 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 16px;
+            padding: 22px 28px;
+            box-shadow: var(--card-shadow);
         }
         .hero-title h1 {
-            font-size: 24px;
-            color: #ffffff;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
             margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--text-main) 30%, var(--accent-brand) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .hero-title p { color: var(--accent-brand); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
-        .header-actions { display: flex; gap: 12px; align-items: center; }
-        .btn-export {
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            color: #818cf8;
-            padding: 8px 16px;
-            border-radius: 8px;
+        .hero-title p { color: var(--accent-brand); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        
+        .btn-action {
+            background: var(--bg-deep);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 9px 16px;
+            border-radius: 10px;
             font-size: 12px;
             font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             text-decoration: none;
-            transition: all 0.2s;
         }
-        .btn-export:hover { background: rgba(99, 102, 241, 0.3); }
+        .btn-action:hover { border-color: var(--accent-brand); background: var(--bg-card-hover); }
+        .btn-export {
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--accent-brand);
+        }
+        .btn-export:hover { background: rgba(99, 102, 241, 0.2); }
+        
         .server-badge {
-            background: rgba(16, 185, 129, 0.15);
+            background: rgba(16, 185, 129, 0.12);
             border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #34d399;
-            padding: 8px 16px;
-            border-radius: 8px;
+            color: #10b981;
+            padding: 9px 16px;
+            border-radius: 10px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .server-badge::before { content: ""; width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
+        .server-badge i { font-size: 10px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Metrics Grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 16px;
         }
         @media(max-width: 900px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
         .metric-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 14px;
+            padding: 18px 20px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
         }
-        .metric-title { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 6px; }
-        .metric-value { font-size: 22px; font-weight: 700; color: #fff; }
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent-brand);
+            opacity: 0.6;
+        }
+        .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .metric-title { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; font-weight: 700; }
+        .metric-icon { width: 30px; height: 30px; border-radius: 8px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-brand); font-size: 13px; }
+        .metric-value { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+
+        /* Notification Banner */
         .notification-banner {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            color: #818cf8;
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            color: var(--accent-brand);
+            padding: 12px 18px;
+            border-radius: 12px;
             font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+
+        /* Dashboard Grid Layout */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1.6fr 1fr;
             gap: 20px;
-            margin-bottom: 20px;
+            align-items: start;
         }
         @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: var(--card-shadow);
         }
         .card h3 {
-            font-size: 16px;
-            margin-bottom: 15px;
-            color: #ffffff;
+            font-size: 15px;
+            margin-bottom: 16px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
-            font-weight: 600;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
         }
-        .zone-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; }
+        .card h3 i { color: var(--accent-brand); }
+
+        /* Zone Filter Tabs */
+        .zone-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
         .zone-tab {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--bg-deep);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 7px 12px;
+            border-radius: 8px;
             font-size: 11px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .zone-tab.active, .zone-tab:hover { background: var(--accent-brand); color: #fff; border-color: var(--accent-brand); }
+
+        /* Stations Grid Container */
         .tables-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
             gap: 12px;
-            max-height: 440px;
+            max-height: 420px;
             overflow-y: auto;
-            padding-right: 5px;
+            padding-right: 4px;
         }
         .table-box {
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--bg-deep);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px;
-            transition: all 0.2s ease;
+            border-radius: 12px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        .table-box:hover { border-color: var(--accent-brand); }
-        .table-info-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-        .table-name { font-weight: 600; font-size: 12px; color: #fff; }
-        .table-zone { font-size: 10px; color: var(--accent-brand); margin-top: 2px; }
-        .table-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; margin-bottom: 8px; font-size: 11px; color: var(--text-muted); }
-        .badge-avail { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; }
-        .badge-res { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; }
+        .table-box:hover { border-color: var(--border-glow); background: var(--bg-card-hover); }
+        .table-info-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .table-icon-wrap { width: 34px; height: 34px; border-radius: 8px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-brand); font-size: 14px; }
+        .table-name { font-weight: 700; font-size: 12px; margin-top: 6px; }
+        .table-zone { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .badge-avail { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 7px; border-radius: 6px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-res { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 3px 7px; border-radius: 6px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .table-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted); }
+
+        .btn-delete-station {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-delete-station:hover { background: rgba(239, 68, 68, 0.25); }
+
+        /* Forms Styling */
+        .right-column-stack { display: flex; flex-direction: column; gap: 20px; }
         .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+        .form-group label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px; }
         .form-control {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: var(--bg-deep);
             border: 1px solid var(--border-color);
-            color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 8px;
+            color: var(--text-main);
+            padding: 9px 12px;
+            border-radius: 9px;
             font-size: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             outline: none;
         }
-        .form-control:focus { border-color: var(--accent-brand); }
-        select.form-control option { background: #181b24; color: #fff; }
+        .form-control:focus { border-color: var(--accent-brand); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
+        select.form-control option { background: var(--bg-card); color: var(--text-main); }
+        .phone-group { display: flex; gap: 8px; }
+        
         .btn-luxury {
-            background: var(--accent-brand);
+            background: linear-gradient(135deg, var(--accent-brand) 0%, var(--accent-hover) 100%);
             color: #ffffff;
             border: none;
             width: 100%;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 11px;
+            border-radius: 9px;
             font-weight: 700;
             font-size: 12px;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: all 0.2s ease;
             margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
-        .btn-luxury:hover { background: var(--accent-hover); }
-        .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
-        .search-input { background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; width: 240px; outline: none; }
+        .btn-luxury:hover { opacity: 0.95; }
+
+        /* Ledger Table */
+        .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+        .search-input { background: var(--bg-deep); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; border-radius: 8px; font-size: 12px; width: 240px; outline: none; }
         .search-input:focus { border-color: var(--accent-brand); }
+        
         .archive-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .archive-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 8px; border-bottom: 1px solid var(--border-color); font-weight: 600; }
-        .archive-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 11px; color: #e0e0e0; }
+        .archive-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 10px 8px; border-bottom: 1px solid var(--border-color); font-weight: 700; }
+        .archive-table td { padding: 12px 8px; border-bottom: 1px solid var(--border-color); font-size: 12px; }
+        .archive-table tr:hover td { background: var(--bg-card-hover); }
+        
         .btn-cancel {
-            background: rgba(239, 68, 68, 0.15);
+            background: rgba(239, 68, 68, 0.12);
             border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #f87171;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 9px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .btn-cancel:hover { background: rgba(239, 68, 68, 0.3); }
-        .btn-delete-table {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.25);
-            color: #f87171;
-            width: 100%;
-            padding: 5px;
+            color: #ef4444;
+            padding: 5px 10px;
             border-radius: 6px;
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .btn-delete-table:hover { background: rgba(239, 68, 68, 0.25); }
-        .empty-state { text-align: center; color: var(--text-muted); padding: 20px; font-style: italic; font-size: 12px; }
+        .btn-cancel:hover { background: rgba(239, 68, 68, 0.25); }
+        .empty-state { text-align: center; color: var(--text-muted); padding: 24px; font-style: italic; font-size: 12px; }
     </style>
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+        }
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedTheme = localStorage.getItem("theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        });
+    </script>
 </head>
 <body>
     <div class="wrapper">
+        <!-- Hero Header -->
         <div class="hero-header">
             <div class="hero-title">
                 <h1>L'Étoile Noire & Grand Gastronomy</h1>
-                <p>Executive Tablekeeper & Concierge Suite</p>
+                <p><i class="fa-solid fa-crown"></i> Executive Tablekeeper & Concierge Suite</p>
             </div>
             <div class="header-actions">
-                <a href="/export" class="btn-export">📥 Export Reports (CSV)</a>
-                <div class="server-badge">Live Secure Cluster</div>
+                <button onclick="toggleTheme()" class="btn-action"><i class="fa-solid fa-circle-half-stroke"></i> Theme</button>
+                <a href="/export" class="btn-action btn-export"><i class="fa-solid fa-file-csv"></i> Export Reports</a>
+                <div class="server-badge"><i class="fa-solid fa-shield-halved"></i> Live Secure Cluster</div>
             </div>
         </div>
 
+        <!-- Metrics Grid -->
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="metric-title">Total Units / Stations</div>
+                <div class="metric-header">
+                    <span class="metric-title">Total Units / Stations</span>
+                    <div class="metric-icon"><i class="fa-solid fa-network-wired"></i></div>
+                </div>
                 <div class="metric-value">{{ metrics.total_suites }}</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-title">Active Utilization Rate</div>
-                <div class="metric-value" style="color: #34d399;">{{ metrics.occupancy_rate }}%</div>
+            <div class="metric-card" style="--accent-brand: #10b981;">
+                <div class="metric-header">
+                    <span class="metric-title">Active Utilization Rate</span>
+                    <div class="metric-icon" style="background: rgba(16,185,129,0.1); color: #10b981;"><i class="fa-solid fa-chart-line"></i></div>
+                </div>
+                <div class="metric-value" style="color: #10b981;">{{ metrics.occupancy_rate }}%</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-title">Active Dispatch Orders</div>
-                <div class="metric-value" style="color: var(--accent-brand);">{{ metrics.active_count }}</div>
+            <div class="metric-card" style="--accent-brand: #f59e0b;">
+                <div class="metric-header">
+                    <span class="metric-title">Active Dispatch Orders</span>
+                    <div class="metric-icon" style="background: rgba(245,158,11,0.1); color: #f59e0b;"><i class="fa-solid fa-receipt"></i></div>
+                </div>
+                <div class="metric-value" style="color: #f59e0b;">{{ metrics.active_count }}</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-title">Total Customer Traffic</div>
+            <div class="metric-card" style="--accent-brand: #3b82f6;">
+                <div class="metric-header">
+                    <span class="metric-title">Total Customer Traffic</span>
+                    <div class="metric-icon" style="background: rgba(59,130,246,0.1); color: #3b82f6;"><i class="fa-solid fa-users"></i></div>
+                </div>
                 <div class="metric-value">{{ metrics.total_guests }}</div>
             </div>
         </div>
 
         {% if notification %}
         <div class="notification-banner">
-            ⚡ <strong>Automated Concierge:</strong> {{ notification }}
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 16px;"></i>
+            <div><strong>Automated Concierge Alert:</strong> {{ notification }}</div>
         </div>
         {% endif %}
 
         <div class="dashboard-grid">
-            <div class="card" style="margin-bottom: 0;">
-                <h3>Live Floor & Station Matrix</h3>
+            <!-- Live Floor Plan -->
+            <div class="card">
+                <h3><i class="fa-solid fa-map-location-dot"></i> Live Floor & Station Matrix</h3>
                 <div class="zone-tabs">
-                    <a href="/?zone=All" class="zone-tab {% if current_zone == 'All' %}active{% endif %}">All Zones</a>
-                    <a href="/?zone=Drive-Thru" class="zone-tab {% if current_zone == 'Drive-Thru' %}active{% endif %}">Drive-Thru</a>
-                    <a href="/?zone=Front%20Counter" class="zone-tab {% if current_zone == 'Front Counter' %}active{% endif %}">Front Counter</a>
-                    <a href="/?zone=Kiosks" class="zone-tab {% if current_zone == 'Kiosks' %}active{% endif %}">Kiosks</a>
-                    <a href="/?zone=Delivery%20Hub" class="zone-tab {% if current_zone == 'Delivery Hub' %}active{% endif %}">Delivery Hub</a>
-                    <a href="/?zone=VIP%20Lounge" class="zone-tab {% if current_zone == 'VIP Lounge' %}active{% endif %}">VIP Lounge</a>
+                    <a href="/?zone=All" class="zone-tab {% if current_zone == 'All' %}active{% endif %}"><i class="fa-solid fa-border-all"></i> All Zones</a>
+                    <a href="/?zone=Drive-Thru" class="zone-tab {% if current_zone == 'Drive-Thru' %}active{% endif %}"><i class="fa-solid fa-car"></i> Drive-Thru</a>
+                    <a href="/?zone=Front%20Counter" class="zone-tab {% if current_zone == 'Front Counter' %}active{% endif %}"><i class="fa-solid fa-cash-register"></i> Front Counter</a>
+                    <a href="/?zone=Kiosks" class="zone-tab {% if current_zone == 'Kiosks' %}active{% endif %}"><i class="fa-solid fa-tablet-screen-button"></i> Kiosks</a>
+                    <a href="/?zone=Delivery%20Hub" class="zone-tab {% if current_zone == 'Delivery Hub' %}active{% endif %}"><i class="fa-solid fa-motorcycle"></i> Delivery Hub</a>
+                    <a href="/?zone=VIP%20Lounge" class="zone-tab {% if current_zone == 'VIP Lounge' %}active{% endif %}"><i class="fa-solid fa-champagne-glasses"></i> VIP Lounge</a>
                 </div>
 
                 <div class="tables-container">
@@ -302,38 +421,42 @@ HTML_TEMPLATE = """
                         <div class="table-box">
                             <div>
                                 <div class="table-info-top">
-                                    <div>
-                                        <div class="table-name">{{ t.name }}</div>
-                                        <div class="table-zone">{{ t.zone }}</div>
+                                    <div class="table-icon-wrap">
+                                        <i class="fa-solid {{ t.icon }}"></i>
                                     </div>
                                     <div>
                                         {% if t.status == 'available' %}
-                                            <span class="badge-avail">READY</span>
+                                            <span class="badge-avail"><i class="fa-solid fa-check"></i> READY</span>
                                         {% else %}
-                                            <span class="badge-res">ACTIVE</span>
+                                            <span class="badge-res"><i class="fa-solid fa-lock"></i> ACTIVE</span>
                                         {% endif %}
                                     </div>
                                 </div>
-                                <div class="table-meta">
-                                    <span>ID: <strong>{{ t.code }}</strong></span>
-                                    <span>👥 Cap: {{ t.seats }}</span>
+                                <div class="table-name">{{ t.name }}</div>
+                                <div class="table-zone">{{ t.zone }}</div>
+                            </div>
+                            <div class="table-meta">
+                                <span>Code: <strong>{{ t.code }}</strong></span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span><i class="fa-solid fa-user-group"></i> {{ t.seats }}</span>
+                                    <form method="POST" action="/delete-table/{{ t.id }}" style="margin: 0;" onsubmit="return confirm('Are you sure you want to remove station {{ t.code }}?');">
+                                        <button type="submit" class="btn-delete-station" title="Remove Station"><i class="fa-solid fa-trash-can"></i></button>
+                                    </form>
                                 </div>
                             </div>
-                            <form method="POST" action="/delete-table/{{ t.id }}" style="margin: 0;">
-                                <button type="submit" class="btn-delete-table">🗑️ Remove Station</button>
-                            </form>
                         </div>
                         {% endfor %}
                     {% else %}
-                        <div class="empty-state" style="grid-column: 1 / -1;">No stations configured for this zone.</div>
+                        <div class="empty-state" style="grid-column: 1 / -1;"><i class="fa-solid fa-folder-open"></i> No stations configured for this zone.</div>
                     {% endif %}
                 </div>
             </div>
 
-            <div>
-                <!-- Add Station Desk -->
+            <!-- Right Sidebar: Registration & Dispatch -->
+            <div class="right-column-stack">
+                <!-- Register New Station Form -->
                 <div class="card">
-                    <h3>Register New Station</h3>
+                    <h3><i class="fa-solid fa-circle-plus"></i> Register New Station</h3>
                     <form method="POST" action="/add-table">
                         <div class="form-group">
                             <label>Station Code (e.g., APX-03)</label>
@@ -354,16 +477,18 @@ HTML_TEMPLATE = """
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Capacity / Slots</label>
+                            <label>Capacity / Slots (Max 50 Seats)</label>
                             <input type="number" name="seats" class="form-control" value="4" min="1" max="50" required>
                         </div>
-                        <button type="submit" class="btn-luxury" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4);">Register Station</button>
+                        <button type="submit" class="btn-luxury" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-brand); border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: none;">
+                            <i class="fa-solid fa-plus"></i> Register Station
+                        </button>
                     </form>
                 </div>
 
-                <!-- Booking / Order Dispatch Desk -->
+                <!-- Order Dispatch Desk -->
                 <div class="card">
-                    <h3>Tablekeeper & Order Dispatch</h3>
+                    <h3><i class="fa-solid fa-paper-plane"></i> Order Dispatch Desk</h3>
                     <form method="POST" action="/book">
                         <div class="form-group">
                             <label>Select Ready Station</label>
@@ -372,7 +497,7 @@ HTML_TEMPLATE = """
                                 {% for t in MEMORY_TABLES %}
                                     {% if t.status == 'available' %}
                                         {% set available_found.val = true %}
-                                        <option value="{{ t.id }}">{{ t.name }} ({{ t.zone }})</option>
+                                        <option value="{{ t.id }}">{{ t.name }} (Cap: {{ t.seats }})</option>
                                     {% endif %}
                                 {% endfor %}
                                 {% if not available_found.val %}
@@ -387,27 +512,39 @@ HTML_TEMPLATE = """
                         </div>
 
                         <div class="form-group">
-                            <label>Contact Phone</label>
-                            <input type="text" name="phone" class="form-control" placeholder="+92 300 0000000" required>
+                            <label>Contact Phone Number</label>
+                            <div class="phone-group">
+                                <select name="country_code" class="form-control" style="width: 105px;">
+                                    <option value="+92" selected>🇵🇰 +92</option>
+                                    <option value="+971">🇦🇪 +971</option>
+                                    <option value="+966">🇸🇦 +966</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+1">🇺🇸 +1</option>
+                                </select>
+                                <input type="tel" name="phone_number" class="form-control" placeholder="300 1234567" required>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Party / Order Size</label>
+                            <label>Party / Order Size (Max 50)</label>
                             <input type="number" name="guests" class="form-control" value="2" min="1" max="50" required>
                         </div>
 
-                        <button type="submit" class="btn-luxury">Dispatch & Secure Slot</button>
+                        <button type="submit" class="btn-luxury">
+                            <i class="fa-solid fa-bolt"></i> Dispatch & Secure Slot
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
 
+        <!-- Active Operations Ledger -->
         <div class="card">
             <div class="ledger-header">
-                <h3>Active Operations Ledger</h3>
+                <h3><i class="fa-solid fa-list-check"></i> Active Operations Ledger</h3>
                 <form method="GET" action="/" style="margin: 0;">
                     <input type="hidden" name="zone" value="{{ current_zone }}">
-                    <input type="text" name="search" class="search-input" placeholder="Search guest or phone..." value="{{ search_query }}">
+                    <input type="text" name="search" class="search-input" placeholder="🔍 Search guest or phone..." value="{{ search_query }}">
                 </form>
             </div>
 
@@ -427,15 +564,15 @@ HTML_TEMPLATE = """
                     <tbody>
                         {% for r in reservations %}
                         <tr>
-                            <td><strong>{{ r.customer_name }}</strong></td>
-                            <td>{{ r.table_name }} ({{ r.code }})</td>
-                            <td><span style="color: var(--accent-brand);">{{ r.zone }}</span></td>
-                            <td>{{ r.phone }}</td>
-                            <td>{{ r.guests }}</td>
-                            <td>{{ r.timestamp }}</td>
+                            <td><strong><i class="fa-solid fa-user" style="color: var(--accent-brand); margin-right: 6px;"></i>{{ r.customer_name }}</strong></td>
+                            <td>{{ r.table_name }} (<span style="color: var(--accent-brand);">{{ r.code }}</span>)</td>
+                            <td><span style="font-weight: 600; color: var(--accent-brand);">{{ r.zone }}</span></td>
+                            <td><i class="fa-solid fa-phone" style="font-size: 10px; color: var(--text-muted); margin-right: 4px;"></i>{{ r.phone }}</td>
+                            <td><i class="fa-solid fa-user-group" style="font-size: 10px; color: var(--text-muted); margin-right: 4px;"></i>{{ r.guests }}</td>
+                            <td><i class="fa-regular fa-clock" style="font-size: 10px; color: var(--text-muted); margin-right: 4px;"></i>{{ r.timestamp }}</td>
                             <td>
                                 <form method="POST" action="/cancel/{{ r.id }}" style="margin: 0;">
-                                    <button type="submit" class="btn-cancel">Release</button>
+                                    <button type="submit" class="btn-cancel"><i class="fa-solid fa-rotate-left"></i> Release</button>
                                 </form>
                             </td>
                         </tr>
@@ -443,7 +580,7 @@ HTML_TEMPLATE = """
                     </tbody>
                 </table>
             {% else %}
-                <div class="empty-state">No active orders found in the executive ledger.</div>
+                <div class="empty-state"><i class="fa-solid fa-inbox"></i> No active orders found in the executive ledger.</div>
             {% endif %}
         </div>
     </div>
@@ -500,33 +637,64 @@ def index():
 @app.route("/add-table", methods=["POST"])
 def add_table():
     global table_id_counter
+    
+    if len(MEMORY_TABLES) >= MAX_TOTAL_STATIONS:
+        return redirect(url_for("index", note=f"Error: Floor capacity reached! Maximum allowed stations limit is {MAX_TOTAL_STATIONS}."))
+
     code = request.form.get("code")
     name = request.form.get("name")
     zone = request.form.get("zone")
-    seats = int(request.form.get("seats", 4))
     
+    try:
+        seats = int(request.form.get("seats", 4))
+    except ValueError:
+        seats = 4
+        
+    if seats < 1 or seats > 50:
+        return redirect(url_for("index", note="Error: Station capacity must be between 1 and 50 seats."))
+    
+    if any(t["code"] == code for t in MEMORY_TABLES):
+        return redirect(url_for("index", note=f"Error: Station code {code} already exists."))
+
+    icon_map = {
+        "Drive-Thru": "fa-car",
+        "Front Counter": "fa-cash-register",
+        "Kiosks": "fa-tablet-screen-button",
+        "Delivery Hub": "fa-motorcycle",
+        "VIP Lounge": "fa-champagne-glasses"
+    }
+    table_icon = icon_map.get(zone, "fa-utensils")
+
     new_table = {
         "id": table_id_counter,
         "code": code,
         "name": name,
         "seats": seats,
         "zone": zone,
-        "status": "available"
+        "status": "available",
+        "icon": table_icon
     }
     MEMORY_TABLES.append(new_table)
     table_id_counter += 1
     
-    note = f"Station {name} ({code}) successfully registered to the network."
+    note = f"Station {name} ({code}) successfully registered with {seats} seats."
     return redirect(url_for("index", note=note))
 
 @app.route("/delete-table/<int:table_id>", methods=["POST"])
 def delete_table(table_id):
     global MEMORY_TABLES, MEMORY_RESERVATIONS
     
-    MEMORY_RESERVATIONS = [r for r in MEMORY_RESERVATIONS if r["table_id"] != table_id]
+    target_table = next((t for t in MEMORY_TABLES if t["id"] == table_id), None)
+    if not target_table:
+        return redirect(url_for("index", note="Error: Station not found."))
+        
+    # Remove station from list
     MEMORY_TABLES = [t for t in MEMORY_TABLES if t["id"] != table_id]
     
-    note = "Station removed successfully from the network."
+    # Also clean up any active reservation attached to this station
+    MEMORY_RESERVATIONS = [r for r in MEMORY_RESERVATIONS if r["table_id"] != table_id]
+    
+    note = f"Station {target_table['name']} ({target_table['code']}) removed successfully."
     return redirect(url_for("index", note=note))
 
 @app.route("/book", methods=["POST"])
@@ -534,8 +702,17 @@ def book():
     global reservation_id_counter
     table_id_str = request.form.get("table_id")
     customer_name = request.form.get("customer_name")
-    phone = request.form.get("phone")
-    guests = request.form.get("guests")
+    country_code = request.form.get("country_code", "+92")
+    phone_number = request.form.get("phone_number")
+    full_phone = f"{country_code} {phone_number}"
+    
+    try:
+        guests = int(request.form.get("guests", 2))
+    except ValueError:
+        guests = 2
+        
+    if guests < 1 or guests > 50:
+        return redirect(url_for("index", note="Error: Party size must be between 1 and 50."))
     
     if not table_id_str:
         return redirect(url_for("index", note="Please select an available station."))
@@ -546,6 +723,8 @@ def book():
     target_table = None
     for t in MEMORY_TABLES:
         if t["id"] == table_id:
+            if t["status"] == "reserved":
+                return redirect(url_for("index", note="Selected station is already occupied."))
             t["status"] = "reserved"
             target_table = t
             break
@@ -558,14 +737,14 @@ def book():
             "code": target_table["code"],
             "zone": target_table["zone"],
             "customer_name": customer_name,
-            "phone": phone,
+            "phone": full_phone,
             "guests": guests,
             "timestamp": timestamp
         }
         MEMORY_RESERVATIONS.insert(0, reservation)
         reservation_id_counter += 1
         
-    note = f"Order successfully dispatched and secured for {customer_name}."
+    note = f"Order successfully dispatched and secured for {customer_name} ({full_phone})."
     return redirect(url_for("index", note=note))
 
 @app.route("/cancel/<int:res_id>", methods=["POST"])
