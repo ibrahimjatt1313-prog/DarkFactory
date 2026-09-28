@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkFactory - Autonomous Restaurant Command Center</title>
+    <title>L'Étoile Noire &mdash; Autonomous Command Center</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -12,8 +12,8 @@
         body {
             background-color: #030712;
             background-image: 
-                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.07) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.07) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
             font-family: 'Inter', sans-serif;
         }
         .font-mono {
@@ -24,78 +24,65 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.07);
         }
-        .glow-emerald {
-            box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.2);
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.2);
         }
-        /* Custom Scrollbar for Terminal & Tables */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(3, 7, 18, 0.5);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(51, 65, 85, 0.8);
-            border-radius: 3px;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(3, 7, 18, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 3px; }
     </style>
 </head>
 <body class="min-h-screen text-slate-100 p-4 md:p-6 lg:p-8 flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950">
     
     <div class="w-full max-w-7xl mx-auto space-y-6">
         
-        <!-- Top Command Header -->
+        <!-- Top Executive Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center glass-panel p-5 rounded-2xl gap-4 shadow-xl">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                    <span class="text-xl">⚡</span>
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-slate-950 font-black text-lg">
+                    ⚡
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent flex items-center gap-2">
-                        DARKFACTORY <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">AI CORE v3.0</span>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent flex items-center gap-2">
+                        L'ÉTOILE NOIRE <span class="text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">ENTERPRISE SUITE</span>
                     </h1>
-                    <p class="text-slate-400 text-xs font-mono">Autonomous Reservation & Atomic Dispatch Engine</p>
+                    <p class="text-slate-400 text-xs font-mono">Autonomous Tablekeeper & Encrypted Dispatch Core</p>
                 </div>
             </div>
 
-            <!-- Live Telemetry Badges -->
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 font-mono text-xs">
+            <div class="flex items-center gap-3 font-mono text-xs">
+                <div class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-800">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="text-slate-400">Node:</span>
-                    <span class="text-emerald-400 font-semibold">ACTIVE</span>
-                </div>
-                <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 font-mono text-xs">
-                    <span class="text-slate-400">Concurrency Locks:</span>
-                    <span class="text-cyan-400 font-semibold">ATOMIC-SAFE</span>
+                    <span class="text-slate-400">Cluster Status:</span>
+                    <span class="text-emerald-400 font-semibold">SECURE_ACTIVE</span>
                 </div>
             </div>
         </header>
 
-        <!-- Main Dashboard Layout -->
+        <!-- Main Workspace Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- Left Column: Station Matrix & Live Feed (7 Cols) -->
+            <!-- Left Side: Station Matrix & Live Floor (7 Cols) -->
             <div class="lg:col-span-7 space-y-6">
                 
-                <!-- Station Matrix Card -->
-                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-4">
-                    <div class="flex items-center justify-between">
+                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-5">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <div>
                             <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Live Station Matrix</h2>
-                            <p class="text-xs text-slate-400">Real-time table synchronization with DB</p>
+                            <p class="text-xs text-slate-400">Real-time database table synchronization</p>
                         </div>
-                        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700/60">
-                            Database: <span class="text-cyan-400">restaurant.db</span>
-                        </span>
+                        <div class="flex gap-1.5 overflow-x-auto pb-1 font-mono text-[11px]">
+                            <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold cursor-pointer">All Zones</span>
+                        </div>
                     </div>
-                    
+
+                    <!-- Tables Matrix Table / Grid view compatible with backend Jinja loop -->
                     <div class="overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-950/50">
                         <table class="w-full text-left text-sm text-slate-300 font-mono">
                             <thead class="bg-slate-900/90 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
                                 <tr>
-                                    <th class="px-4 py-3">Table Identifier</th>
+                                    <th class="px-4 py-3">Station ID</th>
                                     <th class="px-4 py-3">Capacity</th>
                                     <th class="px-4 py-3">Current Status</th>
                                 </tr>
@@ -103,9 +90,7 @@
                             <tbody class="divide-y divide-slate-800/40">
                                 {% for table in tables %}
                                 <tr class="hover:bg-slate-900/60 transition-colors">
-                                    <td class="px-4 py-3 font-semibold text-cyan-400 flex items-center gap-2">
-                                        <span class="text-slate-600">#</span>{{ table.id }}
-                                    </td>
+                                    <td class="px-4 py-3 font-semibold text-cyan-400">#{{ table.id }}</td>
                                     <td class="px-4 py-3 text-slate-300 font-medium">{{ table.seats }} Seats</td>
                                     <td class="px-4 py-3">
                                         {% if table.status == 'Available' %}
@@ -125,59 +110,76 @@
                     </div>
                 </div>
 
-                <!-- Simulated Autonomous Terminal Feed -->
-                <div class="glass-panel p-5 rounded-2xl shadow-xl space-y-3 font-mono">
-                    <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800/80 pb-2">
+                <!-- Live System Terminal Activity Stream -->
+                <div class="glass-panel p-5 rounded-2xl shadow-xl space-y-3 font-mono text-xs">
+                    <div class="flex items-center justify-between text-slate-400 border-b border-slate-800/80 pb-2">
                         <span class="flex items-center gap-2 font-semibold text-slate-300">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> SYSTEM EVENT STREAM
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> TELEMETRY EVENT STREAM
                         </span>
-                        <span>SECURE_SOCKET_OK</span>
+                        <span class="text-[10px] text-slate-500">SECURE_SOCKET_OK</span>
                     </div>
-                    <div class="bg-slate-950/80 rounded-xl p-3.5 text-xs text-slate-400 space-y-1.5 border border-slate-900 overflow-hidden">
-                        <p class="text-emerald-400 font-medium">[INFO] Autonomous engine initialized successfully.</p>
-                        <p class="text-slate-400">[TRACE] DB Connection established on SQLite backend.</p>
-                        <p class="text-cyan-400">[WATCH] Listening for incoming table dispatch sequences...</p>
+                    <div class="bg-slate-950/80 rounded-xl p-3.5 text-slate-400 space-y-1.5 border border-slate-900">
+                        <p class="text-emerald-400 font-medium">[SYS_OK] Autonomous tablekeeper initialized successfully.</p>
+                        <p class="text-slate-400">[DB_SYNC] Connected to SQLite cluster instance.</p>
+                        <p class="text-cyan-400">[LISTENING] Awaiting atomic slot dispatch commands...</p>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Right Column: Reservation Action Panel (5 Cols) -->
+            <!-- Right Side: Order Dispatch Console with Country Codes (5 Cols) -->
             <div class="lg:col-span-5 space-y-6">
                 
-                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-6 flex flex-col justify-between border-t-2 border-t-cyan-500">
+                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-5 border-t-2 border-t-cyan-500 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Slot Dispatch Console</h2>
-                            <span class="text-[11px] font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded border border-indigo-500/20">POST /reserve</span>
+                        <div class="flex items-center justify-between mb-3">
+                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Tablekeeper & Dispatch</h2>
+                            <span class="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">POST /reserve</span>
                         </div>
-                        <p class="text-xs text-slate-400 mb-5">Execute real-time table allocation with atomic locking mechanisms to prevent race conditions.</p>
+                        <p class="text-xs text-slate-400 mb-5">Provision atomic slot allocations with multi-region contact verification.</p>
                         
                         <form method="POST" action="/reserve" class="space-y-4 font-mono">
                             <div>
                                 <label for="table_id" class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Target Table ID:</label>
                                 <input type="number" id="table_id" name="table_id" required 
-                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm font-semibold"
+                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-sm font-semibold"
                                     placeholder="Enter table ID (e.g. 1)...">
                             </div>
 
                             <div>
-                                <label for="customer_name" class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Operator / Guest Name:</label>
+                                <label for="customer_name" class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Guest Full Name:</label>
                                 <input type="text" id="customer_name" name="customer_name" required 
-                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm font-semibold"
-                                    placeholder="Enter full guest name...">
+                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-sm font-semibold"
+                                    placeholder="Enter guest name...">
+                            </div>
+
+                            <!-- Country Code + Phone Input Group -->
+                            <div>
+                                <label class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Contact Phone Number:</label>
+                                <div class="flex gap-2">
+                                    <select name="country_code" class="bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-3 text-cyan-400 focus:outline-none focus:border-cyan-500 text-xs font-bold">
+                                        <option value="+92" selected>🇵🇰 +92 (PK)</option>
+                                        <option value="+971">🇦🇪 +971 (UAE)</option>
+                                        <option value="+966">🇸🇦 +966 (KSA)</option>
+                                        <option value="+44">🇬🇧 +44 (UK)</option>
+                                        <option value="+1">🇺🇸 +1 (US)</option>
+                                    </select>
+                                    <input type="tel" name="phone_number" required
+                                        class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-sm"
+                                        placeholder="300 1234567">
+                                </div>
                             </div>
 
                             <button type="submit" 
-                                class="w-full mt-2 bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-xl shadow-cyan-500/25 transition-all transform active:scale-[0.99] text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                                <span>⚡</span> Execute Secure Reservation
+                                class="w-full mt-3 bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-xl shadow-cyan-500/25 transition-all transform active:scale-[0.99] text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                                <span>⚡</span> Dispatch & Secure Slot
                             </button>
                         </form>
                     </div>
 
-                    <!-- Response Message Banner -->
+                    <!-- Message Alert Box -->
                     {% if message %}
-                    <div class="mt-4 p-4 rounded-xl text-xs font-mono font-medium border animate-fadeIn {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 glow-emerald' if 'Success' in message or 'Successfully' in message else 'bg-rose-500/10 border-rose-500/30 text-rose-300' }}">
+                    <div class="mt-4 p-4 rounded-xl text-xs font-mono font-medium border {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 glow-cyan' if 'Success' in message or 'Successfully' in message else 'bg-rose-500/10 border-rose-500/30 text-rose-300' }}">
                         <div class="flex items-start gap-2">
                             <span class="text-base">{{ '✅' if 'Success' in message or 'Successfully' in message else '⚠️' }}</span>
                             <div>
@@ -195,8 +197,8 @@
 
         <!-- Footer -->
         <footer class="text-center pt-4 border-t border-slate-800/80 text-slate-500 text-xs font-mono flex flex-col md:flex-row justify-between items-center gap-2">
-            <span>DarkFactory Autonomous Systems &mdash; Hackathon Demo Build</span>
-            <span class="text-slate-400">Powered by Python, Flask/FastAPI & Tailwind CSS</span>
+            <span>L'Étoile Noire Grand Gastronomy &mdash; Secure Tablekeeper Suite</span>
+            <span class="text-slate-400">Powered by Python & Flask Backend</span>
         </footer>
 
     </div>
