@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,54 +9,85 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
         
-        body {
+        /* Theme 1: Dark Glassmorphism (Default) */
+        body[data-theme="dark"] {
             background-color: #030712;
             background-image: 
                 radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
-            font-family: 'Inter', sans-serif;
+            color: #f1f5f9;
         }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .glass-panel {
+        body[data-theme="dark"] .glass-panel {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.07);
         }
-        .glow-cyan {
-            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.2);
+
+        /* Theme 2: Light Executive */
+        body[data-theme="light"] {
+            background-color: #f8fafc;
+            color: #0f172a;
         }
+        body[data-theme="light"] .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Theme 3: Warm Editorial Cream (Tablekeeper Inspired) */
+        body[data-theme="editorial"] {
+            background-color: #fcf9f2;
+            color: #2c241d;
+        }
+        body[data-theme="editorial"] .glass-panel {
+            background: rgba(255, 252, 247, 0.95);
+            border: 1px solid rgba(44, 36, 29, 0.1);
+            box-shadow: 0 10px 30px -10px rgba(44, 36, 29, 0.08);
+        }
+
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: rgba(3, 7, 18, 0.5); }
         ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-screen text-slate-100 p-4 md:p-6 lg:p-8 flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950">
+<body class="min-h-screen p-4 md:p-6 lg:p-8 flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-300">
     
     <div class="w-full max-w-7xl mx-auto space-y-6">
         
         <!-- Top Executive Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center glass-panel p-5 rounded-2xl gap-4 shadow-xl">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-slate-950 font-black text-lg">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg text-slate-950 font-black text-lg">
                     ⚡
                 </div>
                 <div>
-                    <h1 class="text-lg md:text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent flex items-center gap-2">
-                        L'ÉTOILE NOIRE <span class="text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">ENTERPRISE SUITE</span>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight flex items-center gap-2">
+                        L'ÉTOILE NOIRE <span class="text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 border border-cyan-500/20">ENTERPRISE SUITE</span>
                     </h1>
-                    <p class="text-slate-400 text-xs font-mono">Autonomous Tablekeeper & Encrypted Dispatch Core</p>
+                    <p class="text-xs font-mono opacity-75">Autonomous Tablekeeper & Encrypted Dispatch Core</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 font-mono text-xs">
-                <div class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-800">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="text-slate-400">Cluster Status:</span>
-                    <span class="text-emerald-400 font-semibold">SECURE_ACTIVE</span>
-                </div>
+            <!-- Controls: Theme Switcher & Auth Buttons -->
+            <div class="flex items-center gap-3 font-mono text-xs flex-wrap">
+                <!-- Theme Switcher Dropdown -->
+                <select id="themeSelector" onchange="switchTheme(this.value)" class="bg-slate-900/10 dark:bg-slate-900/90 text-current px-3 py-2 rounded-xl border border-current/20 focus:outline-none cursor-pointer">
+                    <option value="dark">🌑 Dark Glass</option>
+                    <option value="light">☀️ Light Clean</option>
+                    <option value="editorial">✨ Editorial Cream</option>
+                </select>
+
+                <button onclick="openModal('loginModal')" class="px-3.5 py-2 rounded-xl border border-current/20 hover:opacity-80 transition-opacity font-semibold">
+                    Log in
+                </button>
+                <button onclick="openModal('signupModal')" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white hover:opacity-90 transition-opacity font-semibold shadow-md">
+                    Sign up
+                </button>
             </div>
         </header>
 
@@ -69,36 +100,36 @@
                 <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-5">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <div>
-                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Live Station Matrix</h2>
-                            <p class="text-xs text-slate-400">Real-time database table synchronization</p>
+                            <h2 class="text-sm font-bold uppercase tracking-wider">Live Station Matrix</h2>
+                            <p class="text-xs opacity-75">Real-time database table synchronization</p>
                         </div>
                         <div class="flex gap-1.5 overflow-x-auto pb-1 font-mono text-[11px]">
-                            <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold cursor-pointer">All Zones</span>
+                            <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-500 border border-cyan-500/30 font-semibold cursor-pointer">All Zones</span>
                         </div>
                     </div>
 
-                    <!-- Tables Matrix Table / Grid view compatible with backend Jinja loop -->
-                    <div class="overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-950/50">
-                        <table class="w-full text-left text-sm text-slate-300 font-mono">
-                            <thead class="bg-slate-900/90 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+                    <!-- Tables Matrix Table -->
+                    <div class="overflow-x-auto rounded-xl border border-current/10 bg-slate-950/20">
+                        <table class="w-full text-left text-sm font-mono">
+                            <thead class="bg-current/5 uppercase tracking-wider text-[11px] border-b border-current/10 opacity-80">
                                 <tr>
                                     <th class="px-4 py-3">Station ID</th>
                                     <th class="px-4 py-3">Capacity</th>
                                     <th class="px-4 py-3">Current Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-800/40">
+                            <tbody class="divide-y divide-current/10">
                                 {% for table in tables %}
-                                <tr class="hover:bg-slate-900/60 transition-colors">
-                                    <td class="px-4 py-3 font-semibold text-cyan-400">#{{ table.id }}</td>
-                                    <td class="px-4 py-3 text-slate-300 font-medium">{{ table.seats }} Seats</td>
+                                <tr class="hover:bg-current/5 transition-colors">
+                                    <td class="px-4 py-3 font-semibold text-cyan-500">#{{ table.id }}</td>
+                                    <td class="px-4 py-3 font-medium">{{ table.seats }} Seats</td>
                                     <td class="px-4 py-3">
                                         {% if table.status == 'Available' %}
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Available
                                         </span>
                                         {% else %}
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20">
                                             <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Reserved
                                         </span>
                                         {% endif %}
@@ -112,52 +143,52 @@
 
                 <!-- Live System Terminal Activity Stream -->
                 <div class="glass-panel p-5 rounded-2xl shadow-xl space-y-3 font-mono text-xs">
-                    <div class="flex items-center justify-between text-slate-400 border-b border-slate-800/80 pb-2">
-                        <span class="flex items-center gap-2 font-semibold text-slate-300">
+                    <div class="flex items-center justify-between border-b border-current/10 pb-2 opacity-75">
+                        <span class="flex items-center gap-2 font-semibold">
                             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> TELEMETRY EVENT STREAM
                         </span>
-                        <span class="text-[10px] text-slate-500">SECURE_SOCKET_OK</span>
+                        <span class="text-[10px]">SECURE_SOCKET_OK</span>
                     </div>
-                    <div class="bg-slate-950/80 rounded-xl p-3.5 text-slate-400 space-y-1.5 border border-slate-900">
-                        <p class="text-emerald-400 font-medium">[SYS_OK] Autonomous tablekeeper initialized successfully[cite: 17].</p>
-                        <p class="text-slate-400">[DB_SYNC] Connected to SQLite cluster instance[cite: 17].</p>
-                        <p class="text-cyan-400">[LISTENING] Awaiting atomic slot dispatch commands[cite: 17]...</p>
+                    <div class="bg-slate-950/40 rounded-xl p-3.5 space-y-1.5 border border-current/10 font-mono">
+                        <p class="text-emerald-500 font-medium">[SYS_OK] Autonomous tablekeeper initialized successfully.</p>
+                        <p class="opacity-75">[DB_SYNC] Connected to SQLite cluster instance.</p>
+                        <p class="text-cyan-500">[LISTENING] Awaiting atomic slot dispatch commands...</p>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Right Side: Order Dispatch Console with Country Codes (5 Cols) -->
+            <!-- Right Side: Order Dispatch Console (5 Cols) -->
             <div class="lg:col-span-5 space-y-6">
                 
                 <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-5 border-t-2 border-t-cyan-500 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Tablekeeper & Dispatch</h2>
-                            <span class="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">POST /reserve</span>
+                            <h2 class="text-sm font-bold uppercase tracking-wider">Tablekeeper & Dispatch</h2>
+                            <span class="text-[10px] font-mono text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">POST /reserve</span>
                         </div>
-                        <p class="text-xs text-slate-400 mb-5">Provision atomic slot allocations with multi-region contact verification[cite: 17].</p>
+                        <p class="text-xs opacity-75 mb-5">Provision atomic slot allocations with multi-region contact verification.</p>
                         
                         <form method="POST" action="/reserve" class="space-y-4 font-mono">
                             <div>
-                                <label for="table_id" class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Target Table ID:</label>
+                                <label for="table_id" class="block text-[11px] font-medium opacity-75 uppercase tracking-wider mb-1.5">Target Table ID:</label>
                                 <input type="number" id="table_id" name="table_id" required 
-                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-sm font-semibold"
+                                    class="w-full bg-slate-900/10 dark:bg-slate-900/90 border border-current/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 text-sm font-semibold"
                                     placeholder="Enter table ID (e.g. 1)...">
                             </div>
 
                             <div>
-                                <label for="customer_name" class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Guest Full Name:</label>
+                                <label for="customer_name" class="block text-[11px] font-medium opacity-75 uppercase tracking-wider mb-1.5">Guest Full Name:</label>
                                 <input type="text" id="customer_name" name="customer_name" required 
-                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-sm font-semibold"
+                                    class="w-full bg-slate-900/10 dark:bg-slate-900/90 border border-current/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 text-sm font-semibold"
                                     placeholder="Enter guest name...">
                             </div>
 
                             <!-- Country Code + Phone Input Group -->
                             <div>
-                                <label class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">Contact Phone Number:</label>
+                                <label class="block text-[11px] font-medium opacity-75 uppercase tracking-wider mb-1.5">Contact Phone Number:</label>
                                 <div class="flex gap-2">
-                                    <select name="country_code" class="bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-3 text-cyan-400 focus:outline-none focus:border-cyan-500 text-xs font-bold">
+                                    <select name="country_code" class="bg-slate-900/10 dark:bg-slate-900/90 border border-current/20 rounded-xl px-3 py-3 text-cyan-500 focus:outline-none text-xs font-bold">
                                         <option value="+92" selected>🇵🇰 +92 (PK)</option>
                                         <option value="+971">🇦🇪 +971 (UAE)</option>
                                         <option value="+966">🇸🇦 +966 (KSA)</option>
@@ -165,13 +196,13 @@
                                         <option value="+1">🇺🇸 +1 (US)</option>
                                     </select>
                                     <input type="tel" name="phone_number" required
-                                        class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-sm"
+                                        class="w-full bg-slate-900/10 dark:bg-slate-900/90 border border-current/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 text-sm"
                                         placeholder="300 1234567">
                                 </div>
                             </div>
 
                             <button type="submit" 
-                                class="w-full mt-3 bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-xl shadow-cyan-500/25 transition-all transform active:scale-[0.99] text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                                class="w-full mt-3 bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-xl transition-all transform active:scale-[0.99] text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                                 <span>⚡</span> Dispatch & Secure Slot
                             </button>
                         </form>
@@ -179,7 +210,7 @@
 
                     <!-- Message Alert Box -->
                     {% if message %}
-                    <div class="mt-4 p-4 rounded-xl text-xs font-mono font-medium border {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 glow-cyan' if 'Success' in message or 'Successfully' in message else 'bg-rose-500/10 border-rose-500/30 text-rose-300' }}">
+                    <div class="mt-4 p-4 rounded-xl text-xs font-mono font-medium border {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' if 'Success' in message or 'Successfully' in message else 'bg-rose-500/10 border-rose-500/30 text-rose-500' }}">
                         <div class="flex items-start gap-2">
                             <span class="text-base">{{ '✅' if 'Success' in message or 'Successfully' in message else '⚠️' }}</span>
                             <div>
@@ -196,11 +227,68 @@
         </div>
 
         <!-- Footer -->
-        <footer class="text-center pt-4 border-t border-slate-800/80 text-slate-500 text-xs font-mono flex flex-col md:flex-row justify-between items-center gap-2">
-            <span>L'Étoile Noire Grand Gastronomy &mdash; Secure Tablekeeper Suite[cite: 17]</span>
-            <span class="text-slate-400">Powered by Python & Flask Backend[cite: 17]</span>
+        <footer class="text-center pt-4 border-t border-current/10 opacity-75 text-xs font-mono flex flex-col md:flex-row justify-between items-center gap-2">
+            <span>L'Étoile Noire Grand Gastronomy &mdash; Secure Tablekeeper Suite</span>
+            <span>Powered by Python & Flask Backend</span>
         </footer>
 
     </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-md space-y-4 relative">
+            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-xl opacity-60 hover:opacity-100">&times;</button>
+            <h2 class="text-lg font-bold">Welcome Back</h2>
+            <p class="text-xs opacity-75">Log in to manage your reservations or console access.</p>
+            <div class="space-y-3 font-mono text-xs">
+                <input type="email" placeholder="Email address..." class="w-full bg-slate-900/20 border border-current/20 rounded-xl px-4 py-3 focus:outline-none">
+                <input type="password" placeholder="Password..." class="w-full bg-slate-900/20 border border-current/20 rounded-xl px-4 py-3 focus:outline-none">
+                <button class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold">Log in &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-md space-y-4 relative">
+            <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-xl opacity-60 hover:opacity-100">&times;</button>
+            <h2 class="text-lg font-bold">Create Account</h2>
+            <p class="text-xs opacity-75">Join L'Étoile Noire for priority table allocations.</p>
+            <div class="space-y-3 font-mono text-xs">
+                <input type="text" placeholder="Full name..." class="w-full bg-slate-900/20 border border-current/20 rounded-xl px-4 py-3 focus:outline-none">
+                <input type="email" placeholder="Email address..." class="w-full bg-slate-900/20 border border-current/20 rounded-xl px-4 py-3 focus:outline-none">
+                <input type="password" placeholder="Password..." class="w-full bg-slate-900/20 border border-current/20 rounded-xl px-4 py-3 focus:outline-none">
+                <button class="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold">Create account &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Theme Switching & Modals -->
+    <script>
+        function switchTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            document.body.setAttribute('data-theme', themeName);
+            localStorage.setItem('preferred_theme', themeName);
+        }
+
+        // Restore saved theme on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('preferred_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.setAttribute('data-theme', savedTheme);
+            const selector = document.getElementById('themeSelector');
+            if(selector) selector.value = savedTheme;
+        });
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.getElementById(modalId).classList.add('flex');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('flex');
+            document.getElementById(modalId).classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
