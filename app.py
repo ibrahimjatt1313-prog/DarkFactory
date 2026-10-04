@@ -29,7 +29,7 @@ reservation_id_counter = 101
 MAX_TOTAL_STATIONS = 15
 
 # ==========================================
-# COMPACT & LUXURY UI TEMPLATE
+# UI TEMPLATE
 # ==========================================
 
 HTML_TEMPLATE = """
@@ -51,7 +51,7 @@ HTML_TEMPLATE = """
             --accent-hover: #4f46e5;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --card-shadow: 0 8px 24px -6px rgba(0,0,0,0.4);
+            --card-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);
         }
         [data-theme="light"] {
             --bg-deep: #f1f5f9;
@@ -62,7 +62,7 @@ HTML_TEMPLATE = """
             --accent-hover: #4338ca;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --card-shadow: 0 8px 20px -4px rgba(0,0,0,0.05);
+            --card-shadow: 0 10px 25px -5px rgba(0,0,0,0.06);
         }
         [data-theme="editorial"] {
             --bg-deep: #fcf9f2;
@@ -73,7 +73,7 @@ HTML_TEMPLATE = """
             --accent-hover: #b45309;
             --text-main: #2c241d;
             --text-muted: #78716c;
-            --card-shadow: 0 8px 24px -6px rgba(44, 36, 29, 0.08);
+            --card-shadow: 0 10px 30px -5px rgba(44, 36, 29, 0.08);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.2s ease, color 0.2s ease; }
         body {
@@ -81,9 +81,9 @@ HTML_TEMPLATE = """
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
             min-height: 100vh;
-            padding: 16px;
+            padding: 24px;
         }
-        .wrapper { max-width: 1350px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+        .wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
         
         /* Hero Header */
         .hero-header {
@@ -92,35 +92,35 @@ HTML_TEMPLATE = """
             align-items: center;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px 20px;
+            border-radius: 16px;
+            padding: 20px 24px;
             box-shadow: var(--card-shadow);
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 16px;
         }
         .hero-title h1 {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             background: linear-gradient(135deg, var(--text-main) 30%, var(--accent-brand) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .hero-title p { color: var(--accent-brand); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
-        .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .hero-title p { color: var(--accent-brand); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         
         .btn-action {
             background: var(--bg-deep);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 7px 12px;
-            border-radius: 8px;
-            font-size: 11px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             text-decoration: none;
         }
         .btn-action:hover { border-color: var(--accent-brand); background: var(--bg-card-hover); }
@@ -130,51 +130,51 @@ HTML_TEMPLATE = """
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.3);
             color: #10b981;
-            padding: 7px 12px;
-            border-radius: 8px;
-            font-size: 11px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         /* Metrics Grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 16px;
         }
         @media(max-width: 900px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
         .metric-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px 14px;
+            border-radius: 14px;
+            padding: 18px 20px;
             box-shadow: var(--card-shadow);
         }
-        .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .metric-title { font-size: 9px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.8px; font-weight: 700; }
-        .metric-value { font-size: 18px; font-weight: 800; }
+        .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .metric-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; font-weight: 700; }
+        .metric-value { font-size: 26px; font-weight: 800; }
 
         .notification-banner {
             background: rgba(99, 102, 241, 0.1);
             border: 1px solid rgba(99, 102, 241, 0.3);
             color: var(--accent-brand);
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 13px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        /* Compact Dashboard Grid */
+        /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 14px;
+            gap: 20px;
             align-items: start;
         }
         @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
@@ -182,166 +182,165 @@ HTML_TEMPLATE = """
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 22px;
             box-shadow: var(--card-shadow);
         }
         .card h3 {
-            font-size: 13px;
-            margin-bottom: 10px;
+            font-size: 15px;
+            margin-bottom: 16px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
+            padding-bottom: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: var(--text-main);
         }
         .card h3 i { color: var(--accent-brand); }
 
         /* Zone Filter Tabs */
-        .zone-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+        .zone-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
         .zone-tab {
             background: var(--bg-deep);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 5px 9px;
-            border-radius: 6px;
-            font-size: 10px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 600;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
         .zone-tab.active, .zone-tab:hover { background: var(--accent-brand); color: #fff; border-color: var(--accent-brand); }
 
-        /* Stations Grid - Optimized for compactness */
+        /* Stations Grid */
         .tables-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
-            max-height: 380px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+            max-height: 480px;
             overflow-y: auto;
-            padding-right: 4px;
+            padding-right: 6px;
         }
         .table-box {
             background: var(--bg-deep);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        .table-info-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-        .table-icon-wrap { width: 28px; height: 28px; border-radius: 6px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-brand); font-size: 12px; }
-        .table-name { font-weight: 700; font-size: 11px; margin-top: 4px; }
-        .table-zone { font-size: 8px; color: var(--text-muted); text-transform: uppercase; }
+        .table-info-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .table-icon-wrap { width: 36px; height: 36px; border-radius: 8px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-brand); font-size: 14px; }
+        .table-name { font-weight: 700; font-size: 13px; margin-top: 6px; }
+        .table-zone { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .badge-avail { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; display: inline-flex; align-items: center; gap: 3px; }
-        .badge-res { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; display: inline-flex; align-items: center; gap: 3px; }
+        .badge-avail { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-res { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
         
-        .table-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--border-color); font-size: 10px; color: var(--text-muted); }
+        .table-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted); }
 
         .btn-delete-station {
             background: rgba(239, 68, 68, 0.1);
             border: 1px solid rgba(239, 68, 68, 0.2);
             color: #ef4444;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 9px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 10px;
             cursor: pointer;
         }
         .btn-delete-station:hover { background: rgba(239, 68, 68, 0.2); }
 
         /* Forms Styling */
-        .right-column-stack { display: flex; flex-direction: column; gap: 14px; }
-        .form-group { margin-bottom: 10px; }
-        .form-group label { display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 4px; }
+        .right-column-stack { display: flex; flex-direction: column; gap: 20px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; }
         .form-control {
             width: 100%;
             background: var(--bg-deep);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 11px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 12px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             outline: none;
         }
-        .form-control:focus { border-color: var(--accent-brand); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15); }
+        .form-control:focus { border-color: var(--accent-brand); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
         
-        /* FIX FOR DROP DOWN OPTIONS VISIBILITY */
         select.form-control option, select option {
             background: var(--bg-card) !important;
             color: var(--text-main) !important;
         }
 
-        .phone-group { display: flex; gap: 6px; }
+        .phone-group { display: flex; gap: 8px; }
         
         .btn-luxury {
             background: linear-gradient(135deg, var(--accent-brand) 0%, var(--accent-hover) 100%);
             color: #ffffff;
             border: none;
             width: 100%;
-            padding: 9px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 11px;
+            font-size: 12px;
             cursor: pointer;
-            margin-top: 4px;
+            margin-top: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
         .btn-luxury:hover { opacity: 0.95; }
 
         /* Ledger Table */
-        .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
-        .search-input { background: var(--bg-deep); border: 1px solid var(--border-color); color: var(--text-main); padding: 7px 10px; border-radius: 7px; font-size: 11px; width: 220px; outline: none; }
+        .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .search-input { background: var(--bg-deep); border: 1px solid var(--border-color); color: var(--text-main); padding: 9px 14px; border-radius: 10px; font-size: 12px; width: 260px; outline: none; }
         .search-input:focus { border-color: var(--accent-brand); }
         
         .archive-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .archive-table th { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); padding: 8px 6px; border-bottom: 1px solid var(--border-color); font-weight: 700; }
-        .archive-table td { padding: 9px 6px; border-bottom: 1px solid var(--border-color); font-size: 11px; }
+        .archive-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 12px 10px; border-bottom: 1px solid var(--border-color); font-weight: 700; }
+        .archive-table td { padding: 14px 10px; border-bottom: 1px solid var(--border-color); font-size: 12px; }
         .archive-table tr:hover td { background: var(--bg-card-hover); }
         
         .btn-cancel {
             background: rgba(239, 68, 68, 0.1);
             border: 1px solid rgba(239, 68, 68, 0.25);
             color: #ef4444;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 9px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 10px;
             font-weight: 700;
             cursor: pointer;
         }
         .btn-cancel:hover { background: rgba(239, 68, 68, 0.2); }
-        .empty-state { text-align: center; color: var(--text-muted); padding: 18px; font-style: italic; font-size: 11px; }
+        .empty-state { text-align: center; color: var(--text-muted); padding: 24px; font-style: italic; font-size: 12px; }
 
         /* Modals */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(9, 10, 15, 0.8);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px);
             display: none; align-items: center; justify-content: center;
-            z-index: 100; padding: 16px;
+            z-index: 100; padding: 20px;
         }
         .modal-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            width: 100%; max-width: 380px;
-            padding: 20px;
+            border-radius: 16px;
+            width: 100%; max-width: 400px;
+            padding: 24px;
             box-shadow: var(--card-shadow);
             position: relative;
         }
         .modal-close {
-            position: absolute; top: 14px; right: 14px;
+            position: absolute; top: 16px; right: 16px;
             background: none; border: none; color: var(--text-muted);
-            font-size: 16px; cursor: pointer;
+            font-size: 18px; cursor: pointer;
         }
         .modal-close:hover { color: var(--text-main); }
     </style>
@@ -370,11 +369,11 @@ HTML_TEMPLATE = """
                 <p><i class="fa-solid fa-crown"></i> Executive Tablekeeper & Concierge Suite</p>
             </div>
             <div class="header-actions">
-                <!-- Theme Switcher with visibility fix -->
-                <div class="btn-action" style="padding: 5px 10px;">
-                    <i class="fa-solid fa-moon" style="color: var(--accent-brand);"></i>
-                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Theme:</span>
-                    <select id="themeSelector" onchange="switchTheme(this.value)" style="background: transparent; border: none; color: var(--text-main); font-weight: 600; cursor: pointer; outline: none; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px;">
+                <!-- Clean Theme Toggle Button -->
+                <div class="btn-action" style="position: relative; cursor: pointer;">
+                    <i class="fa-solid fa-circle-half-stroke" style="color: var(--accent-brand);"></i>
+                    <span style="font-weight: 700;">Theme</span>
+                    <select id="themeSelector" onchange="switchTheme(this.value)" style="position: absolute; opacity: 0; width: 100%; height: 100%; left: 0; top: 0; cursor: pointer;">
                         <option value="dark">Dark Glass</option>
                         <option value="light">Light Clean</option>
                         <option value="editorial">Editorial Cream</option>
@@ -402,28 +401,28 @@ HTML_TEMPLATE = """
             <div class="metric-card">
                 <div class="metric-header">
                     <span class="metric-title">Total Stations</span>
-                    <i class="fa-solid fa-network-wired" style="color: var(--accent-brand); font-size: 12px;"></i>
+                    <i class="fa-solid fa-network-wired" style="color: var(--accent-brand); font-size: 14px;"></i>
                 </div>
                 <div class="metric-value">{{ metrics.total_suites }}</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
                     <span class="metric-title">Utilization Rate</span>
-                    <i class="fa-solid fa-chart-line" style="color: #10b981; font-size: 12px;"></i>
+                    <i class="fa-solid fa-chart-line" style="color: #10b981; font-size: 14px;"></i>
                 </div>
                 <div class="metric-value" style="color: #10b981;">{{ metrics.occupancy_rate }}%</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
                     <span class="metric-title">Active Dispatch</span>
-                    <i class="fa-solid fa-receipt" style="color: #f59e0b; font-size: 12px;"></i>
+                    <i class="fa-solid fa-receipt" style="color: #f59e0b; font-size: 14px;"></i>
                 </div>
                 <div class="metric-value" style="color: #f59e0b;">{{ metrics.active_count }}</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
                     <span class="metric-title">Customer Traffic</span>
-                    <i class="fa-solid fa-users" style="color: #3b82f6; font-size: 12px;"></i>
+                    <i class="fa-solid fa-users" style="color: #3b82f6; font-size: 14px;"></i>
                 </div>
                 <div class="metric-value">{{ metrics.total_guests }}</div>
             </div>
@@ -470,7 +469,7 @@ HTML_TEMPLATE = """
                             </div>
                             <div class="table-meta">
                                 <span>Code: <strong>{{ t.code }}</strong></span>
-                                <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
                                     <span><i class="fa-solid fa-user-group"></i> {{ t.seats }}</span>
                                     <form method="POST" action="/delete-table/{{ t.id }}" style="margin: 0;" onsubmit="return confirm('Remove station {{ t.code }}?');">
                                         <button type="submit" class="btn-delete-station" title="Remove"><i class="fa-solid fa-trash-can"></i></button>
@@ -514,7 +513,7 @@ HTML_TEMPLATE = """
                         <div class="form-group">
                             <label>Phone Number</label>
                             <div class="phone-group">
-                                <select name="country_code" class="form-control" style="width: 85px;">
+                                <select name="country_code" class="form-control" style="width: 95px;">
                                     <option value="+92" selected>+92</option>
                                     <option value="+971">+971</option>
                                     <option value="+44">+44</option>
@@ -615,8 +614,8 @@ HTML_TEMPLATE = """
     <div id="signupModal" class="modal-overlay">
         <div class="modal-card">
             <button onclick="closeModal('signupModal')" class="modal-close">&times;</button>
-            <h3 style="border:none; margin-bottom: 6px; padding:0;"><i class="fa-solid fa-user-plus"></i> Create Real Account</h3>
-            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Register with your original email address.</p>
+            <h3 style="border:none; margin-bottom: 8px; padding:0;"><i class="fa-solid fa-user-plus"></i> Create Real Account</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Register with your original email address.</p>
             <form method="POST" action="/signup">
                 <div class="form-group">
                     <label>Full Name</label>
@@ -630,7 +629,7 @@ HTML_TEMPLATE = """
                     <label>Password</label>
                     <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn-luxury" style="margin-top: 6px;">Register &rarr;</button>
+                <button type="submit" class="btn-luxury" style="margin-top: 8px;">Register &rarr;</button>
             </form>
         </div>
     </div>
@@ -639,8 +638,8 @@ HTML_TEMPLATE = """
     <div id="loginModal" class="modal-overlay">
         <div class="modal-card">
             <button onclick="closeModal('loginModal')" class="modal-close">&times;</button>
-            <h3 style="border:none; margin-bottom: 6px; padding:0;"><i class="fa-solid fa-right-to-bracket"></i> Executive Login</h3>
-            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Enter your registered credentials.</p>
+            <h3 style="border:none; margin-bottom: 8px; padding:0;"><i class="fa-solid fa-right-to-bracket"></i> Executive Login</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Enter your registered credentials.</p>
             <form method="POST" action="/login">
                 <div class="form-group">
                     <label>Email Address</label>
@@ -650,7 +649,7 @@ HTML_TEMPLATE = """
                     <label>Password</label>
                     <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn-luxury" style="margin-top: 6px;">Log in &rarr;</button>
+                <button type="submit" class="btn-luxury" style="margin-top: 8px;">Log in &rarr;</button>
             </form>
         </div>
     </div>
@@ -727,12 +726,19 @@ def login():
     email = request.form.get("email")
     password = request.form.get("password")
     
+    # Check if email exists first in registered users
+    user_exists = next((u for u in REGISTERED_USERS if u["email"] == email), None)
+    
+    if not user_exists:
+        return redirect(url_for("index", note="Error: No account found with this email. Please sign up first."))
+        
+    # Check if password matches
     user = next((u for u in REGISTERED_USERS if u["email"] == email and u["password"] == password), None)
     if user:
         CURRENT_SESSION_USER = {"name": user["name"], "email": user["email"], "logged_in": True}
         return redirect(url_for("index", note=f"Welcome back, {user['name']}!"))
     else:
-        return redirect(url_for("index", note="Error: Invalid email or password. Please sign up if you don't have an account."))
+        return redirect(url_for("index", note="Error: Incorrect password. Please try again."))
 
 @app.route("/logout")
 def logout():
