@@ -28,7 +28,7 @@ reservation_id_counter = 101
 MAX_TOTAL_STATIONS = 15
 
 # ==========================================
-# COMPREHENSIVE LUXURY ENTERPRISE UI TEMPLATE
+# REARRANGED & OPTIMIZED LUXURY UI TEMPLATE
 # ==========================================
 
 HTML_TEMPLATE = """
@@ -38,7 +38,6 @@ HTML_TEMPLATE = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L'Étoile Noire & Grand Gastronomy - Executive Suite</title>
-    <!-- Google Fonts & FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -54,7 +53,6 @@ HTML_TEMPLATE = """
             --text-muted: #94a3b8;
             --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
         }
-        /* Theme 2: Light Executive */
         [data-theme="light"] {
             --bg-deep: #f1f5f9;
             --bg-card: #ffffff;
@@ -67,7 +65,6 @@ HTML_TEMPLATE = """
             --text-muted: #64748b;
             --card-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
         }
-        /* Theme 3: Warm Editorial Cream */
         [data-theme="editorial"] {
             --bg-deep: #fcf9f2;
             --bg-card: #ffffff;
@@ -88,7 +85,6 @@ HTML_TEMPLATE = """
             min-height: 100vh;
             padding: 24px 20px;
         }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
         .wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
         
         /* Hero Header */
@@ -99,7 +95,7 @@ HTML_TEMPLATE = """
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 22px 28px;
+            padding: 20px 26px;
             box-shadow: var(--card-shadow);
             flex-wrap: wrap;
             gap: 15px;
@@ -120,7 +116,7 @@ HTML_TEMPLATE = """
             background: var(--bg-deep);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 9px 16px;
+            padding: 9px 14px;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 600;
@@ -142,7 +138,7 @@ HTML_TEMPLATE = """
             background: rgba(16, 185, 129, 0.12);
             border: 1px solid rgba(16, 185, 129, 0.3);
             color: #10b981;
-            padding: 9px 16px;
+            padding: 9px 14px;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 700;
@@ -164,7 +160,7 @@ HTML_TEMPLATE = """
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 18px 20px;
+            padding: 16px 18px;
             box-shadow: var(--card-shadow);
             position: relative;
             overflow: hidden;
@@ -176,12 +172,11 @@ HTML_TEMPLATE = """
             background: var(--accent-brand);
             opacity: 0.6;
         }
-        .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .metric-title { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; font-weight: 700; }
-        .metric-icon { width: 30px; height: 30px; border-radius: 8px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-brand); font-size: 13px; }
-        .metric-value { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .metric-icon { width: 28px; height: 28px; border-radius: 8px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-brand); font-size: 12px; }
+        .metric-value { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
 
-        /* Notification Banner */
         .notification-banner {
             background: rgba(99, 102, 241, 0.12);
             border: 1px solid rgba(99, 102, 241, 0.35);
@@ -195,10 +190,10 @@ HTML_TEMPLATE = """
             gap: 12px;
         }
 
-        /* Dashboard Grid Layout */
+        /* Dashboard Grid Layout (Rearranged for clean view) */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1.6fr 1fr;
+            grid-template-columns: 2fr 1.1fr;
             gap: 20px;
             align-items: start;
         }
@@ -208,12 +203,12 @@ HTML_TEMPLATE = """
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 22px;
+            padding: 20px;
             box-shadow: var(--card-shadow);
         }
         .card h3 {
             font-size: 15px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
             font-weight: 700;
@@ -225,12 +220,12 @@ HTML_TEMPLATE = """
         .card h3 i { color: var(--accent-brand); }
 
         /* Zone Filter Tabs */
-        .zone-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+        .zone-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
         .zone-tab {
             background: var(--bg-deep);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 7px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-size: 11px;
             font-weight: 600;
@@ -241,12 +236,12 @@ HTML_TEMPLATE = """
         }
         .zone-tab.active, .zone-tab:hover { background: var(--accent-brand); color: #fff; border-color: var(--accent-brand); }
 
-        /* Stations Grid Container */
+        /* Stations Grid */
         .tables-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
             gap: 12px;
-            max-height: 420px;
+            max-height: 480px;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -350,7 +345,7 @@ HTML_TEMPLATE = """
         .btn-cancel:hover { background: rgba(239, 68, 68, 0.25); }
         .empty-state { text-align: center; color: var(--text-muted); padding: 24px; font-style: italic; font-size: 12px; }
 
-        /* Modal Styles */
+        /* Modals */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -413,16 +408,19 @@ HTML_TEMPLATE = """
                 <p><i class="fa-solid fa-crown"></i> Executive Tablekeeper & Concierge Suite</p>
             </div>
             <div class="header-actions">
-                <!-- Theme Selector with 3 Themes -->
-                <select id="themeSelector" onchange="switchTheme(this.value)" class="btn-action" style="cursor: pointer; outline: none;">
-                    <option value="dark">🌑 Dark Glass</option>
-                    <option value="light">☀️ Light Clean</option>
-                    <option value="editorial">✨ Editorial Cream</option>
-                </select>
+                <!-- Theme Option with Old Style Icon and "Theme" label -->
+                <div class="btn-action" style="padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-moon" style="color: var(--accent-brand);"></i>
+                    <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Theme:</span>
+                    <select id="themeSelector" onchange="switchTheme(this.value)" style="background: transparent; border: none; color: var(--text-main); font-weight: 600; cursor: pointer; outline: none; font-family: 'Plus Jakarta Sans', sans-serif;">
+                        <option value="dark">Dark Glass</option>
+                        <option value="light">Light Clean</option>
+                        <option value="editorial">Editorial Cream</option>
+                    </select>
+                </div>
 
                 <a href="/export" class="btn-action btn-export"><i class="fa-solid fa-file-csv"></i> Export Reports</a>
                 
-                <!-- Log in and Sign up buttons -->
                 <button onclick="openModal('loginModal')" class="btn-action"><i class="fa-solid fa-right-to-bracket"></i> Log in</button>
                 <button onclick="openModal('signupModal')" class="btn-action" style="background: var(--accent-brand); color: #fff; border-color: var(--accent-brand);">Sign up</button>
 
@@ -469,8 +467,9 @@ HTML_TEMPLATE = """
         </div>
         {% endif %}
 
+        <!-- Rearranged Main Grid: Floor Plan on Left, Forms Stack on Right -->
         <div class="dashboard-grid">
-            <!-- Live Floor Plan -->
+            <!-- Live Floor Plan & Stations (Expanded View) -->
             <div class="card">
                 <h3><i class="fa-solid fa-map-location-dot"></i> Live Floor & Station Matrix</h3>
                 <div class="zone-tabs">
@@ -519,40 +518,8 @@ HTML_TEMPLATE = """
                 </div>
             </div>
 
-            <!-- Right Sidebar: Registration & Dispatch -->
+            <!-- Right Sidebar: Order Dispatch & Registration -->
             <div class="right-column-stack">
-                <!-- Register New Station Form -->
-                <div class="card">
-                    <h3><i class="fa-solid fa-circle-plus"></i> Register New Station</h3>
-                    <form method="POST" action="/add-table">
-                        <div class="form-group">
-                            <label>Station Code (e.g., APX-03)</label>
-                            <input type="text" name="code" class="form-control" placeholder="APX-03" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Station Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="Express Counter 3" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Zone Category</label>
-                            <select name="zone" class="form-control" required>
-                                <option value="Drive-Thru">Drive-Thru</option>
-                                <option value="Front Counter">Front Counter</option>
-                                <option value="Kiosks">Kiosks</option>
-                                <option value="Delivery Hub">Delivery Hub</option>
-                                <option value="VIP Lounge">VIP Lounge</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Capacity / Slots (Max 50 Seats)</label>
-                            <input type="number" name="seats" class="form-control" value="4" min="1" max="50" required>
-                        </div>
-                        <button type="submit" class="btn-luxury" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-brand); border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: none;">
-                            <i class="fa-solid fa-plus"></i> Register Station
-                        </button>
-                    </form>
-                </div>
-
                 <!-- Order Dispatch Desk -->
                 <div class="card">
                     <h3><i class="fa-solid fa-paper-plane"></i> Order Dispatch Desk</h3>
@@ -599,6 +566,38 @@ HTML_TEMPLATE = """
 
                         <button type="submit" class="btn-luxury">
                             <i class="fa-solid fa-bolt"></i> Dispatch & Secure Slot
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Register New Station Form -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-circle-plus"></i> Register New Station</h3>
+                    <form method="POST" action="/add-table">
+                        <div class="form-group">
+                            <label>Station Code (e.g., APX-03)</label>
+                            <input type="text" name="code" class="form-control" placeholder="APX-03" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Station Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Express Counter 3" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Zone Category</label>
+                            <select name="zone" class="form-control" required>
+                                <option value="Drive-Thru">Drive-Thru</option>
+                                <option value="Front Counter">Front Counter</option>
+                                <option value="Kiosks">Kiosks</option>
+                                <option value="Delivery Hub">Delivery Hub</option>
+                                <option value="VIP Lounge">VIP Lounge</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Capacity / Slots (Max 50 Seats)</label>
+                            <input type="number" name="seats" class="form-control" value="4" min="1" max="50" required>
+                        </div>
+                        <button type="submit" class="btn-luxury" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-brand); border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: none;">
+                            <i class="fa-solid fa-plus"></i> Register Station
                         </button>
                     </form>
                 </div>
