@@ -1,33 +1,43 @@
-# L'Étoile Noire Tablekeeper
-**Executive Tablekeeper, Multi-Zone Floor Management & Live Order Dispatch Suite**
+<div align="center">
 
-An enterprise-grade restaurant reservation and floor management system built for the **Dark Factory** hackathon (*tablekeeper* track, presented by WeAreDevelopers & BAND).
+# L'Étoile Noire & Grand Gastronomy
+### Enterprise Tablekeeper & Executive Concierge Suite
 
----
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0.2-green?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained%3Dyes-active-success.svg?style=for-the-badge)](https://github.com/ibrahimjatt1313-prog)
 
-## 🚀 Project Overview
-**L'Étoile Noire Tablekeeper** bridges real-time multi-zone floor monitoring with secure administrative control. Designed to handle high-end dining and multi-zone hospitality operations under strict concurrency constraints, it guarantees that tables are never double-booked.
+*A high-performance, responsive Flask web application engineered for executive dining room management, live zone operations, order dispatching, and secure user authentication.*
 
-### 🌟 Key Features
-* **Live Floor & Station Matrix:** Real-time occupancy tracking across 5 distinct dining zones (Drive-Thru, Front Counter, Kiosks, Delivery Hub, and VIP Lounge).
-* **Smart Station Lifecycle:** Dynamic station registration and capacity threshold management (supporting up to 50 seats per station).
-* **Order Dispatch Desk:** Secure slot booking with standardized international phone number validation.
-* **Active Operations Ledger:** Instant auditing, state locking, and CSV report exports.
-* **Glassmorphism UI:** Modern, responsive Tailwind CSS interface with dual Dark/Light theme support.
+</div>
 
 ---
 
-## 🛠️ Tech Stack
-* **Backend:** Python, Flask, SQLite / Relational state management.
-* **Frontend:** HTML5, Tailwind CSS, Modern JavaScript.
-* **Architecture:** Multi-agent autonomous engineering workflow via BAND Desktop, structured across clean-room development stages.
+## 🚀 Core Features
+
+- **🌐 Live Floor & Station Matrix:** Real-time tracking and state-management for service stations across multiple distinct zones (*Drive-Thru, Front Counter, Self-Order Kiosks, Global Delivery Hub, and VIP Executive Lounge*).
+- **🛡️ Secure Authentication Suite:** Complete user registration system with duplicate email safeguards and rigorous login validation (*instant prompts for unregistered accounts or incorrect passwords*).
+- **⚡ Order Dispatch Desk:** Lightning-fast order routing system allowing staff to allocate incoming customer requests to ready stations with customized party sizes and phone number formatting.
+- **🎨 Dynamic Theming Engine:** Built-in persistence for seamless switching between 3 distinct visual environments: **Dark Glass**, **Light Clean**, and **Editorial Cream**.
+- **📊 Real-Time Analytics & CSV Exports:** Instant occupancy rate calculators, customer traffic metrics, and complete operational ledger export capabilities.
 
 ---
 
-## 📁 Repository Structure
-* `stage-1/` - Core application foundation, basic routing, and initial station schema.
-* `stage-2/` - Multi-zone floor matrix integration and dynamic filtering.
-* `stage-3/` - Order dispatch desk, international phone validation, and state locking.
-* `stage-4/` - Production-ready glassmorphism UI, CSV report exports, and telemetry.
-* `mandates/` - Generic, reusable coding agent standing instructions.
-* `Dockerfile` - Clean-room containerization setup.
+## 🛠️ Technology Stack
+
+| Layer | Technologies & Tools |
+| :--- | :--- |
+| **Backend** | Python 3, Flask, In-Memory State Architecture |
+| **Frontend** | HTML5, Modern CSS3 (CSS Custom Properties for Theming) |
+| **Icons & Fonts** | FontAwesome 6, Google Fonts (*Plus Jakarta Sans*) |
+| **Toolchain** | Git, GitHub, VS Code, PowerShell |
+
+---
+
+## 📂 Project Architecture
+
+```text
+├── app.py              # Main Flask application, routing controllers & mock database
+├── requirements.txt    # Project dependencies and python packages list
+└── README.md           # Professional project documentation
