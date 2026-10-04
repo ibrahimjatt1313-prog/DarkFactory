@@ -25,7 +25,6 @@ MEMORY_RESERVATIONS = []
 table_id_counter = 9
 reservation_id_counter = 101
 
-# Maximum allowed total stations on the floor for safety & performance
 MAX_TOTAL_STATIONS = 15
 
 # ==========================================
@@ -40,7 +39,7 @@ HTML_TEMPLATE = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L'Étoile Noire & Grand Gastronomy - Executive Suite</title>
     <!-- Google Fonts & FontAwesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -55,6 +54,7 @@ HTML_TEMPLATE = """
             --text-muted: #94a3b8;
             --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
         }
+        /* Theme 2: Light Executive */
         [data-theme="light"] {
             --bg-deep: #f1f5f9;
             --bg-card: #ffffff;
@@ -67,6 +67,19 @@ HTML_TEMPLATE = """
             --text-muted: #64748b;
             --card-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
         }
+        /* Theme 3: Warm Editorial Cream */
+        [data-theme="editorial"] {
+            --bg-deep: #fcf9f2;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f5f0e6;
+            --border-color: rgba(44, 36, 29, 0.1);
+            --border-glow: rgba(217, 119, 6, 0.3);
+            --accent-brand: #d97706;
+            --accent-hover: #b45309;
+            --text-main: #2c241d;
+            --text-muted: #78716c;
+            --card-shadow: 0 10px 30px -10px rgba(44, 36, 29, 0.08);
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
         body {
             background-color: var(--bg-deep);
@@ -75,6 +88,7 @@ HTML_TEMPLATE = """
             min-height: 100vh;
             padding: 24px 20px;
         }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         .wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
         
         /* Hero Header */
@@ -87,6 +101,8 @@ HTML_TEMPLATE = """
             border-radius: 16px;
             padding: 22px 28px;
             box-shadow: var(--card-shadow);
+            flex-wrap: wrap;
+            gap: 15px;
         }
         .hero-title h1 {
             font-size: 22px;
@@ -98,7 +114,7 @@ HTML_TEMPLATE = """
             -webkit-text-fill-color: transparent;
         }
         .hero-title p { color: var(--accent-brand); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
-        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         
         .btn-action {
             background: var(--bg-deep);
@@ -333,19 +349,59 @@ HTML_TEMPLATE = """
         }
         .btn-cancel:hover { background: rgba(239, 68, 68, 0.25); }
         .empty-state { text-align: center; color: var(--text-muted); padding: 24px; font-style: italic; font-size: 12px; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(9, 10, 15, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .modal-close:hover { color: var(--text-main); }
     </style>
     <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute("data-theme");
-            const newTheme = currentTheme === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", newTheme);
-            localStorage.setItem("theme", newTheme);
+        function switchTheme(themeName) {
+            document.documentElement.setAttribute("data-theme", themeName);
+            localStorage.setItem("theme", themeName);
         }
         window.addEventListener("DOMContentLoaded", () => {
             const savedTheme = localStorage.getItem("theme") || "dark";
             document.documentElement.setAttribute("data-theme", savedTheme);
+            const selector = document.getElementById("themeSelector");
+            if(selector) selector.value = savedTheme;
         });
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "flex";
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
     </script>
 </head>
 <body>
@@ -357,8 +413,19 @@ HTML_TEMPLATE = """
                 <p><i class="fa-solid fa-crown"></i> Executive Tablekeeper & Concierge Suite</p>
             </div>
             <div class="header-actions">
-                <button onclick="toggleTheme()" class="btn-action"><i class="fa-solid fa-circle-half-stroke"></i> Theme</button>
+                <!-- Theme Selector with 3 Themes -->
+                <select id="themeSelector" onchange="switchTheme(this.value)" class="btn-action" style="cursor: pointer; outline: none;">
+                    <option value="dark">🌑 Dark Glass</option>
+                    <option value="light">☀️ Light Clean</option>
+                    <option value="editorial">✨ Editorial Cream</option>
+                </select>
+
                 <a href="/export" class="btn-action btn-export"><i class="fa-solid fa-file-csv"></i> Export Reports</a>
+                
+                <!-- Log in and Sign up buttons -->
+                <button onclick="openModal('loginModal')" class="btn-action"><i class="fa-solid fa-right-to-bracket"></i> Log in</button>
+                <button onclick="openModal('signupModal')" class="btn-action" style="background: var(--accent-brand); color: #fff; border-color: var(--accent-brand);">Sign up</button>
+
                 <div class="server-badge"><i class="fa-solid fa-shield-halved"></i> Live Secure Cluster</div>
             </div>
         </div>
@@ -584,6 +651,46 @@ HTML_TEMPLATE = """
             {% endif %}
         </div>
     </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-card">
+            <button onclick="closeModal('loginModal')" class="modal-close">&times;</button>
+            <h3 style="border:none; margin-bottom: 8px; padding:0;"><i class="fa-solid fa-right-to-bracket"></i> Welcome Back</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Log in to manage your reservations or console access.</p>
+            <div class="form-group">
+                <label>Email address</label>
+                <input type="email" placeholder="name@example.com" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" placeholder="••••••••" class="form-control">
+            </div>
+            <button onclick="closeModal('loginModal'); alert('Logged in successfully!');" class="btn-luxury" style="margin-top: 8px;">Log in &rarr;</button>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal-overlay">
+        <div class="modal-card">
+            <button onclick="closeModal('signupModal')" class="modal-close">&times;</button>
+            <h3 style="border:none; margin-bottom: 8px; padding:0;"><i class="fa-solid fa-user-plus"></i> Create Account</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Join L'Étoile Noire for priority table allocations.</p>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" placeholder="Muhammad Ibraheem" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Email address</label>
+                <input type="email" placeholder="name@example.com" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" placeholder="••••••••" class="form-control">
+            </div>
+            <button onclick="closeModal('signupModal'); alert('Account created successfully!');" class="btn-luxury" style="margin-top: 8px;">Create account &rarr;</button>
+        </div>
+    </div>
 </body>
 </html>
 """
@@ -688,10 +795,7 @@ def delete_table(table_id):
     if not target_table:
         return redirect(url_for("index", note="Error: Station not found."))
         
-    # Remove station from list
     MEMORY_TABLES = [t for t in MEMORY_TABLES if t["id"] != table_id]
-    
-    # Also clean up any active reservation attached to this station
     MEMORY_RESERVATIONS = [r for r in MEMORY_RESERVATIONS if r["table_id"] != table_id]
     
     note = f"Station {target_table['name']} ({target_table['code']}) removed successfully."
