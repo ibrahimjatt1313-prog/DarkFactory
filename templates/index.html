@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Étoile Noire &mdash; Autonomous Command Center</title>
+    <title>L'Étoile Noire & Grand Gastronomy &mdash; Executive Suite</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -67,9 +67,10 @@
                 </div>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold tracking-tight flex items-center gap-2">
-                        L'ÉTOILE NOIRE <span class="text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 border border-cyan-500/20">ENTERPRISE SUITE</span>
+                        L'Étoile Noire & Grand Gastronomy 
+                        <span class="text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 border border-cyan-500/20">EXECUTIVE SUITE</span>
                     </h1>
-                    <p class="text-xs font-mono opacity-75">Autonomous Tablekeeper & Encrypted Dispatch Core</p>
+                    <p class="text-xs font-mono opacity-75">EXECUTIVE TABLEKEEPER & CONCIERGE SUITE</p>
                 </div>
             </div>
 
@@ -91,6 +92,41 @@
             </div>
         </header>
 
+        <!-- Metrics Overview Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-panel p-5 rounded-2xl flex items-center justify-between shadow-lg">
+                <div>
+                    <p class="text-[11px] font-mono uppercase tracking-wider opacity-75">Total Units / Stations</p>
+                    <h3 class="text-2xl font-bold font-mono mt-1">{{ total_stations|default(8) }}</h3>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">🏢</div>
+            </div>
+
+            <div class="glass-panel p-5 rounded-2xl flex items-center justify-between shadow-lg">
+                <div>
+                    <p class="text-[11px] font-mono uppercase tracking-wider opacity-75">Active Utilization Rate</p>
+                    <h3 class="text-2xl font-bold font-mono mt-1 text-emerald-500">{{ utilization_rate|default('0.0%') }}</h3>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">📈</div>
+            </div>
+
+            <div class="glass-panel p-5 rounded-2xl flex items-center justify-between shadow-lg">
+                <div>
+                    <p class="text-[11px] font-mono uppercase tracking-wider opacity-75">Active Dispatch Orders</p>
+                    <h3 class="text-2xl font-bold font-mono mt-1 text-amber-500">{{ active_orders_count|default(0) }}</h3>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center font-bold">📋</div>
+            </div>
+
+            <div class="glass-panel p-5 rounded-2xl flex items-center justify-between shadow-lg">
+                <div>
+                    <p class="text-[11px] font-mono uppercase tracking-wider opacity-75">Total Customer Traffic</p>
+                    <h3 class="text-2xl font-bold font-mono mt-1 text-cyan-500">{{ customer_traffic|default(0) }}</h3>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">👥</div>
+            </div>
+        </div>
+
         <!-- Main Workspace Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
@@ -100,7 +136,9 @@
                 <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-5">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <div>
-                            <h2 class="text-sm font-bold uppercase tracking-wider">Live Station Matrix</h2>
+                            <h2 class="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                                <span>🏢</span> Live Floor & Station Matrix
+                            </h2>
                             <p class="text-xs opacity-75">Real-time database table synchronization</p>
                         </div>
                         <div class="flex gap-1.5 overflow-x-auto pb-1 font-mono text-[11px]">
@@ -108,36 +146,26 @@
                         </div>
                     </div>
 
-                    <!-- Tables Matrix Table -->
-                    <div class="overflow-x-auto rounded-xl border border-current/10 bg-slate-950/20">
-                        <table class="w-full text-left text-sm font-mono">
-                            <thead class="bg-current/5 uppercase tracking-wider text-[11px] border-b border-current/10 opacity-80">
-                                <tr>
-                                    <th class="px-4 py-3">Station ID</th>
-                                    <th class="px-4 py-3">Capacity</th>
-                                    <th class="px-4 py-3">Current Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-current/10">
-                                {% for table in tables %}
-                                <tr class="hover:bg-current/5 transition-colors">
-                                    <td class="px-4 py-3 font-semibold text-cyan-500">#{{ table.id }}</td>
-                                    <td class="px-4 py-3 font-medium">{{ table.seats }} Seats</td>
-                                    <td class="px-4 py-3">
-                                        {% if table.status == 'Available' %}
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Available
-                                        </span>
-                                        {% else %}
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Reserved
-                                        </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <!-- Station Cards Grid / Table List -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[420px] overflow-y-auto pr-1">
+                        {% for table in tables %}
+                        <div class="glass-panel p-4 rounded-xl border border-current/10 flex flex-col justify-between space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-bold text-sm">Station #{{ table.id }}</h4>
+                                    <p class="text-[11px] opacity-75 font-mono">Capacity: {{ table.seats }} Seats</p>
+                                </div>
+                                {% if table.status == 'Available' %}
+                                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">READY</span>
+                                {% else %}
+                                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20">RESERVED</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-xs font-mono opacity-75 flex justify-between items-center pt-2 border-t border-current/10">
+                                <span>Status: {{ table.status }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -158,13 +186,38 @@
 
             </div>
 
-            <!-- Right Side: Order Dispatch Console (5 Cols) -->
+            <!-- Right Side: Order Dispatch & Registration (5 Cols) -->
             <div class="lg:col-span-5 space-y-6">
                 
+                <!-- Register New Station Card -->
+                <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-4 border-t-2 border-t-indigo-500">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                            <span>➕</span> Register New Station
+                        </h2>
+                    </div>
+                    <form method="POST" action="/add_station" class="space-y-3 font-mono text-xs">
+                        <div>
+                            <label class="block text-[10px] opacity-75 uppercase mb-1">Station Code (e.g. APX-03)</label>
+                            <input type="text" name="station_code" placeholder="APX-03" class="w-full bg-slate-900/10 dark:bg-slate-900/90 border border-current/20 rounded-xl px-3 py-2.5 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] opacity-75 uppercase mb-1">Capacity / Slots</label>
+                            <input type="number" name="seats" placeholder="4" class="w-full bg-slate-900/10 dark:bg-slate-900/90 border border-current/20 rounded-xl px-3 py-2.5 focus:outline-none">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white rounded-xl font-bold uppercase tracking-wider text-[11px] shadow-md hover:opacity-90">
+                            Register Station
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Order Dispatch Desk -->
                 <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-5 border-t-2 border-t-cyan-500 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-sm font-bold uppercase tracking-wider">Tablekeeper & Dispatch</h2>
+                            <h2 class="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                                <span>🚀</span> Order Dispatch Desk
+                            </h2>
                             <span class="text-[10px] font-mono text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">POST /reserve</span>
                         </div>
                         <p class="text-xs opacity-75 mb-5">Provision atomic slot allocations with multi-region contact verification.</p>
@@ -224,6 +277,19 @@
 
             </div>
 
+        </div>
+
+        <!-- Active Operations Ledger -->
+        <div class="glass-panel p-6 rounded-2xl shadow-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <h2 class="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                    <span>📊</span> Active Operations Ledger
+                </h2>
+                <input type="text" placeholder="Search guest or phone..." class="bg-slate-900/10 dark:bg-slate-900/90 border border-current/20 rounded-xl px-4 py-2 text-xs font-mono focus:outline-none w-full sm:w-64">
+            </div>
+            <div class="text-center py-6 text-xs font-mono opacity-60">
+                📁 No active orders found in the executive ledger.
+            </div>
         </div>
 
         <!-- Footer -->
