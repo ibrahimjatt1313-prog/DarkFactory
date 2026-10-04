@@ -18,7 +18,7 @@
 
 - **🌐 Live Floor & Station Matrix:** Real-time tracking and state-management for service stations across multiple distinct zones (*Drive-Thru, Front Counter, Self-Order Kiosks, Global Delivery Hub, and VIP Executive Lounge*).
 - **🛡️ Secure Authentication Suite:** Complete user registration system with duplicate email safeguards and rigorous login validation (*instant prompts for unregistered accounts or incorrect passwords*).
-- **⚡ Order Dispatch Desk:** Lightning-fast order routing system allowing staff to allocate incoming customer requests to ready stations with customized party sizes and phone number formatting.
+- **⚡ Order Dispatch Desk:** Lightning-fast order routing system allowing staff to allocate incoming customer requests to ready stations with customized party sizes and phone number formatting[cite: 2].
 - **🎨 Dynamic Theming Engine:** Built-in persistence for seamless switching between 3 distinct visual environments: **Dark Glass**, **Light Clean**, and **Editorial Cream**.
 - **📊 Real-Time Analytics & CSV Exports:** Instant occupancy rate calculators, customer traffic metrics, and complete operational ledger export capabilities.
 
@@ -28,16 +28,17 @@
 
 | Layer | Technologies & Tools |
 | :--- | :--- |
-| **Backend** | Python 3, Flask, In-Memory State Architecture |
-| **Frontend** | HTML5, Modern CSS3 (CSS Custom Properties for Theming) |
-| **Icons & Fonts** | FontAwesome 6, Google Fonts (*Plus Jakarta Sans*) |
-| **Toolchain** | Git, GitHub, VS Code, PowerShell |
+| **Backend** | Python 3, Flask, In-Memory State Architecture[cite: 2] |
+| **Frontend** | HTML5, Modern CSS3 (CSS Custom Properties for Theming)[cite: 2] |
+| **Icons & Fonts** | FontAwesome 6, Google Fonts (*Plus Jakarta Sans*)[cite: 2] |
+| **Toolchain** | Git, GitHub, VS Code, PowerShell[cite: 2] |
 
 ---
 
 ## 📂 Project Architecture
 
 ```text
-├── app.py              # Main Flask application, routing controllers & mock database
-├── requirements.txt    # Project dependencies and python packages list
-└── README.md           # Professional project documentation
+├── app.py                  # Main Flask application, routing controllers & mock database
+├── mandates/               # System rules, operational constraints, and workflow guides
+├── requirements.txt        # Project dependencies and python packages list
+└── README.md               # Professional project documentation
